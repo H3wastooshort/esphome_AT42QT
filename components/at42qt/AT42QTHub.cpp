@@ -7,10 +7,16 @@ namespace at42qt {
 static const char *TAG = "at42qt.component";
 
 void AT42QTHub::setup(){
+    //TODO: check chip_id==0x3E
+
     uint8_t nzv=1;
     this->write_register((uint8_t)RESET, &nzv, 1);
+    
+    uint8_t high_sensitivity = 0x84;
+    for (uint8_t r = (uint8_t)KEY_PULSE_SCALE; r<(uint8_t)KEY_CONTROL; i++)
+        this->write_register(r, &high_sensitivity, 1);
+    
     this->write_register((uint8_t)CALIBRATE, &nzv, 1);
-    //TODO: check chip_id==0x3E
 }
 
 void AT42QTHub::loop(){
