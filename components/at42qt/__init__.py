@@ -8,8 +8,8 @@ DEPENDENCIES = ["i2c"]
 
 CONF_AT42QT_HUB_ID = "at42qt_hub_id"
 
-empty_sensor_hub_ns = cg.esphome_ns.namespace("at42qt")
-AT42QTHub = empty_sensor_hub_ns.class_("AT42QTHub", cg.Component, i2c.I2CDevice)
+at42qt_ns = cg.esphome_ns.namespace("at42qt")
+AT42QTHub = at42qt_ns.class_("AT42QTHub", cg.Component, i2c.I2CDevice)
 
 CONFIG_SCHEMA = cv.Schema(
     {

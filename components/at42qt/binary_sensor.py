@@ -5,6 +5,7 @@ from esphome.const import CONF_ID, CONF_CHANNEL
 from . import AT42QTHub, CONF_AT42QT_HUB_ID
 
 DEPENDENCIES = ["at42qt"]
+AT42QTChannel = at42qt_ns.class_("AT42QTChannel", binary_sensor.BinarySensor)
 
 CONFIG_SCHEMA = (
     binary_sensor.binary_sensor_schema(AT42QTChannel).extend(
