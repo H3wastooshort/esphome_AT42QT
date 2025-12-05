@@ -16,7 +16,7 @@ void AT42QTHub::setup(){
 void AT42QTHub::loop(){
     //TODO: check chip_id==0x3E
     AT42QT2120_Status status; 
-    this->read_register((uint8_t)STATUS, static_cast<uint8_t*>(&status.bytes), 4);
+    this->read_register((uint8_t)STATUS, &(status.bytes[0]), 4);
     if (status.calibrating) return;
     for(auto *binary_sensor : this->binary_sensors_) binary_sensor->process(status.keys); //send keystate to binsensors
 }
