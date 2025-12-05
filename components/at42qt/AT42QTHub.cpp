@@ -8,16 +8,16 @@ static const char *TAG = "at42qt.component";
 
 void AT42QTHub::setup(){
     uint8_t nzv=1;
-    this->write_register(RESET, &nzv, 1);
-    this->write_register(CALIBRATE, &nzv, 1);
+    this->write_register((uint8_t)RESET, &nzv, 1);
+    this->write_register((uint8_t)CALIBRATE, &nzv, 1);
     //TODO: check chip_id==0x3E
 }
 
 void AT42QTHub::loop(){
     //TODO: check chip_id==0x3E
-    if (touch_sensor.calibrating) return;
     AT42QT2120_Status status; 
-    this->read_register(STATUS, &status.bytes,4);
+    this->read_register((uint8_t)STATUS, &status.bytes, 4);
+    if (status.calibrating) return;
     for(auto *binary_sensor : this->binary_sensors_) binary_sensor->process(status.keys); //send keystate to binsensors
 }
 

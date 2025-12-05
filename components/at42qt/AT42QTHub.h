@@ -32,33 +32,19 @@ enum AT42QT2120_Registers
   KEY_REFERENCE = 76,
 };
 
-union AT42QT2120_Status
-  {
-    struct
-    {
-      uint32_t any_key_touched : 1;
-      uint32_t slider_or_wheel : 1;
-      uint32_t space0 : 4;
-      uint32_t overflow : 1;
-      uint32_t calibrating : 1;
-      uint32_t keys: 12;
-      uint32_t space1 : 4;
-      uint32_t slider_or_wheel_position : 8;
-    };
-    uint32_t bytes;
+union AT42QT2120_Status {
+  struct {
+    uint32_t any_key_touched : 1;
+    uint32_t slider_or_wheel : 1;
+    uint32_t space0 : 4;
+    uint32_t overflow : 1;
+    uint32_t calibrating : 1;
+    uint32_t keys: 12;
+    uint32_t space1 : 4;
+    uint32_t slider_or_wheel_position : 8;
   };
-
-class AT42QTHub : public Component, public i2c::I2CDevice {
- public:
-  void register_binary_sensor(binary_sensor::BinarySensor *obj) { this->binary_sensors_.push_back(obj); }
-  void setup() override;
-  void loop() override;
-  void dump_config() override;
-  
- protected:
-  std::vector<binary_sensor::BinarySensor *> binary_sensors_;
+  uint32_t bytes;
 };
-
 
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
@@ -67,6 +53,17 @@ class AT42QTChannel : public binary_sensor::BinarySensor {
 
  protected:
   uint8_t channel_{0};
+};
+
+class AT42QTHub : public Component, public i2c::I2CDevice {
+ public:
+  void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
+  void setup() override;
+  void loop() override;
+  void dump_config() override;
+  
+ protected:
+  std::vector<AT42QTChannel *> binary_sensors_;
 };
 
 } //namespace at42qt
