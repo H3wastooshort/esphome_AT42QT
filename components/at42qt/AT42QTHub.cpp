@@ -16,6 +16,9 @@ void AT42QTHub::setup(){
     for (uint8_t r = (uint8_t)KEY_DETECT_THRESHOLD; r<(uint8_t)KEY_CONTROL; r++)
         this->write_register(r, &low_thresh, 1);
 
+    uint8_t charge_time = 128;
+    this->write_register((uint8_t)CHARGE_DURATION, &charge_time, 1);
+            
     this->write_register((uint8_t)CALIBRATE, &nzv, 1);
 }
 
