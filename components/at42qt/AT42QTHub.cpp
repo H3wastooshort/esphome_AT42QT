@@ -13,9 +13,9 @@ void AT42QTHub::setup(){
     this->write_register((uint8_t)RESET, &nzv, 1);
     
     uint8_t high_sensitivity = 0x82; //sample_count=4^8 scale=1/(2^2)
-    for (uint8_t r = (uint8_t)KEY_PULSE_SCALE; r<(uint8_t)KEY_CONTROL; r++)
+    for (uint8_t r = (uint8_t)KEY_PULSE_SCALE; r<(uint8_t)KEY_SIGNAL; r++)
         this->write_register(r, &high_sensitivity, 1);
-    
+
     this->write_register((uint8_t)CALIBRATE, &nzv, 1);
 }
 
