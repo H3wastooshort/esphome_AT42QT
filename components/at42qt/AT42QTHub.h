@@ -1,7 +1,10 @@
 #pragma once
 
 #include "esphome/core/component.h"
+#include "esphome/components/i2c/i2c.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
+
+
 namespace esphome {
 namespace at42qt {
 static const char * i2c_fail = "can't communicate";
@@ -45,7 +48,7 @@ union AT42QT2120_Status
     uint32_t bytes;
   };
 
-class AT42QTHub : public Component {
+class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
   void register_binary_sensor(binary_sensor::BinarySensor *obj) { this->binary_sensors_.push_back(obj); }
   void setup() override;
@@ -54,7 +57,6 @@ class AT42QTHub : public Component {
   
  protected:
   std::vector<binary_sensor::BinarySensor *> binary_sensors_;
-  AT42QT2120 touch_sensor;
 };
 
 
