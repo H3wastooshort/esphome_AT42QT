@@ -43,7 +43,7 @@ union AT42QT2120_Status {
     uint32_t space1 : 4;
     uint32_t slider_or_wheel_position : 8;
   };
-  uint32_t bytes;
+  uint8_t bytes[4];
 };
 
 class AT42QTChannel : public binary_sensor::BinarySensor {
