@@ -1,3 +1,4 @@
+#include "AT42QTHub.h"
 #include "esphome/core/log.h"
 
 namespace esphome {
