@@ -10,7 +10,7 @@ namespace at42qt {
 static const char * i2c_fail = "can't communicate";
 
 
-enum struct AT42QT2120_Registers
+enum AT42QT2120_Registers
 {
   CHIP_ID = 0,
   VERSION,

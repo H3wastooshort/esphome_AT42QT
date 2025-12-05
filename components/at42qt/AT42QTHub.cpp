@@ -14,8 +14,8 @@ void AT42QTHub::setup(){
 }
 
 void AT42QTHub::loop(){
-    if (!touch_sensor.communicating()) {return;}
-    if (touch_sensor.calibrating()) return;
+    //TODO: check chip_id==0x3E
+    if (touch_sensor.calibrating) return;
     AT42QT2120_Status status; 
     this->read_register(STATUS, &status.bytes,4);
     for(auto *binary_sensor : this->binary_sensors_) binary_sensor->process(status.keys); //send keystate to binsensors
