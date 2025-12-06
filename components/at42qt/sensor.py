@@ -1,0 +1,38 @@
+import esphome.codegen as cg
+import esphome.config_validation as cv
+from esphome.components import sensor
+from esphome.const import CONF_ID, UNIT_EMPTY, ICON_EMPTY
+from . import AT42QTHub, CONF_AT42QT_HUB_ID, at42qt_ns
+
+DEPENDENCIES = ["at42qt"]
+
+EmptyCompoundSensor = at42qt_ns.class_("AT42QTDebug", cg.PollingComponent)
+
+CONF_SENSOR_SIGNAL = "signal"
+CONF_SENSOR_REFERENCE = "reference"
+
+CONFIG_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_AT42QT_HUB_ID): cv.use_id(AT42QTHub),
+        cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=11),
+        cv.Optional(CONF_SENSOR_SIGNAL): sensor.sensor_schema(
+            EmptyCompoundSensor,
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
+        ).extend(),
+        cv.Optional(CONF_SENSOR_REFERENCE): sensor.sensor_schema(
+            EmptyCompoundSensor,
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_EMPTY,
+            accuracy_decimals=0,
+            entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
+        ).extend(),
+    }
+).extend(cv.polling_component_schema("10s"))
+
+async def to_code(config):
+    hub = await cg.get_variable(config[CONF_AT42QT_HUB_ID])
+    var = await sensor.new_sensor(config, config[CONF_CHANNEL])
+    cg.add(hub.register_debug(var))

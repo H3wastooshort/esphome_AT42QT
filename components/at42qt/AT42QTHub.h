@@ -49,6 +49,27 @@ union AT42QT2120_Status {
 
 class AT42QTHub;
 
+class AT42QTDebug : public sensor::Sensor, public PollingComponent {
+ public:
+  AT42QTDebug(uint8_t channel) : channel(channel) {};
+  void dump_config();
+  void process(uint8_t signal, uint8_t reference);
+  uint8_t get_channel() const;
+  bool get_wants_update() const;
+
+  void set_signal(sensor::Sensor *sensor_sig) { this->sensor_sig = sensor_sig; }
+  void set_reference(sensor::Sensor *sensor_ref) { this->sensor_ref = sensor_ref; }
+
+  void update() override {this->wants_update=true;};
+  //void dump_config() override;
+
+ protected:
+  bool wants_update{true};
+  uint8_t channel{0};
+  sensor::Sensor *sensor_sig{nullptr};
+  sensor::Sensor *sensor_ref{nullptr};
+};
+
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
   AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
@@ -68,6 +89,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
   AT42QTHub(uint8_t pulse_length) : pulse_length(pulse_length) {}
   void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
+  void register_debug(AT42QTDebug *obj) { this->sensors_.push_back(obj); }
   void setup() override;
   void loop() override;
   void dump_config() override;
@@ -79,6 +101,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   
  protected:
   std::vector<AT42QTChannel *> binary_sensors_;
+  std::vector<AT42QTDebug *> sensors_;
   uint8_t pulse_length{0};
   bool finished_setup{false};
 };
