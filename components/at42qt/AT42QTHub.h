@@ -52,6 +52,7 @@ class AT42QTHub;
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
   AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
+  void dump_config() override;
   void process(uint32_t data) { this->publish_state(static_cast<bool>(data & (1 << this->channel))); }
 
   uint8_t get_channel() const;
