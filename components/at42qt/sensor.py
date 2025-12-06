@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor
-from esphome.const import CONF_ID, CONF_CHANNEL, UNIT_EMPTY
+from esphome.const import CONF_ID, CONF_CHANNEL, UNIT_EMPTY, ENTITY_CATEGORY_DIAGNOSTIC
 from . import AT42QTHub, CONF_AT42QT_HUB_ID, at42qt_ns
 
 DEPENDENCIES = ["at42qt"]
@@ -24,13 +24,13 @@ CONFIG_SCHEMA = cv.Schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_SIGNAL_VARIANT,
             accuracy_decimals=0,
-            entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_SENSOR_REFERENCE): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_WAVEFORM,
             accuracy_decimals=0,
-            entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     }
 ).extend(cv.polling_component_schema("10s"))
