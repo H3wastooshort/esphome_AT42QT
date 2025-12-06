@@ -4,6 +4,14 @@ currently works for AT42QT2120. others can be added
 
 ### Example
 ```yaml
+external_components:
+  - source:
+      type: git
+      url: https://github.com/H3wastooshort/esphome_AT42QT.git
+      ref: main
+    components: [ at42qt ]
+    refresh: 60s
+
 i2c:
   scl: GPIO5
   sda: GPIO6
