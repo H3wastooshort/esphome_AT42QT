@@ -57,8 +57,8 @@ class AT42QTDebug : public sensor::Sensor, public PollingComponent {
   uint8_t get_channel() const;
   bool get_wants_update() const;
 
-  void set_signal(sensor::Sensor *sensor_sig) { this->sensor_sig = sensor_sig; }
-  void set_reference(sensor::Sensor *sensor_ref) { this->sensor_ref = sensor_ref; }
+  void set_sensor_sig(sensor::Sensor *sensor_sig) { this->sensor_sig = sensor_sig; }
+  void set_sensor_ref(sensor::Sensor *sensor_ref) { this->sensor_ref = sensor_ref; }
 
   void update() override {this->wants_update=true;};
   //void dump_config() override;

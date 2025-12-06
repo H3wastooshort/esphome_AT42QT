@@ -36,4 +36,10 @@ CONFIG_SCHEMA = cv.Schema(
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_AT42QT_HUB_ID])
     var = await sensor.new_sensor(config, config[CONF_CHANNEL])
+    if CONF_SENSOR_SIGNAL in config:
+        sens = await sensor.new_sensor(config[CONF_SENSOR_SIGNAL])
+        cg.add(var.set_sensor_sig(sens))
+    if CONF_SENSOR_REFERENCE in config:
+        sens = await sensor.new_sensor(config[CONF_SENSOR_REFERENCE])
+        cg.add(var.set_sensor_ref(sens))  
     cg.add(hub.register_debug(var))

@@ -94,8 +94,8 @@ uint8_t AT42QTDebug::get_channel() const {return this->channel;};
 uint8_t AT42QTDebug::get_wants_update() const {return this->wants_update;};
 
 void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
-    this->sensor_sig->publish_state(signal);
-    this->sensor_ref->publish_state(reference);
+    if (this->sensor_sig != nullptr) this->sensor_sig->publish_state(signal);
+    if (this->sensor_sig != nullptr) this->sensor_ref->publish_state(reference);
     this->wants_update=false;
 }
 
