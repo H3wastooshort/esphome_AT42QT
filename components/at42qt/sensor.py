@@ -25,13 +25,13 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_SIGNAL_VARIANT,
             accuracy_decimals=0,
             entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
-        ).extend(),
+        ),
         cv.Optional(CONF_SENSOR_REFERENCE): sensor.sensor_schema(
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_WAVEFORM,
             accuracy_decimals=0,
             entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
-        ).extend(),
+        ),
     }
 ).extend(cv.polling_component_schema("10s"))
 
