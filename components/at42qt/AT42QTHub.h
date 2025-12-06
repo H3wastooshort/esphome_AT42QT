@@ -7,7 +7,7 @@
 
 namespace esphome {
 namespace at42qt {
-static const char *const TAG = "at42qt";
+static const char *const TAG = "at42qt.component";
 
 static const char * i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
 
@@ -51,7 +51,7 @@ class AT42QTHub;
 
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
-  AT42QTChannel(uint8_t channel) : hub(hub), channel(channel) {};
+  AT42QTChannel(uint8_t channel) : channel(channel) {};
   void process(uint32_t data) { this->publish_state(static_cast<bool>(data & (1 << this->channel))); }
  protected:
   uint8_t channel{0};

@@ -4,8 +4,6 @@
 namespace esphome {
 namespace at42qt {
 
-static const char *TAG = "at42qt.component";
-
 void AT42QTHub::setup(){
 
     uint8_t nzv=1;
@@ -33,14 +31,14 @@ void AT42QTHub::dump_config(){
     }
 }
 
-void set_threshold(uint8_t channel, uint8_t threshold) {
+void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
     this->write_register((uint8_t)KEY_DETECT_THRESHOLD + channel, &threshold, 1);
 }
-void set_oversampling(uint8_t channel, uint8_t oversampling) {
+void AT42QTHub::set_oversampling(uint8_t channel, uint8_t oversampling) {
     this->write_register((uint8_t)KEY_PULSE_SCALE + channel, &oversampling, 1);
 }
 
-void set_pulse_length(uint8_t pulse_length) {
+void AT42QTHub::set_pulse_length(uint8_t pulse_length) {
     this->write_register((uint8_t)CHARGE_DURATION, &pulse_length, 1);
 }
 
