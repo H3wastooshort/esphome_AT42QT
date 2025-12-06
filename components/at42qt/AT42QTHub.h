@@ -65,7 +65,7 @@ class AT42QTChannel : public binary_sensor::BinarySensor {
 
 class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
-  AT42QTHub(uint8_t pulse_length) : initial_pulse_length(pulse_length) {}
+  AT42QTHub(uint8_t pulse_length) : pulse_length(pulse_length) {}
   void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
   void setup() override;
   void loop() override;
@@ -78,7 +78,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   
  protected:
   std::vector<AT42QTChannel *> binary_sensors_;
-  uint8_t initial_pulse_length{0};
+  uint8_t pulse_length{0};
 };
 
 } //namespace at42qt
