@@ -40,7 +40,7 @@ void AT42QTHub::loop(){
 void AT42QTHub::dump_config(){
     LOG_I2C_DEVICE(this);
     for(auto *chan : this->binary_sensors_)
-        chan->dump_config;
+        chan->dump_config();
     ESP_LOGD(TAG, "Pulse length: %d", this->pulse_length);
 }
 
