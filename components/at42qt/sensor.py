@@ -15,19 +15,21 @@ CONF_SENSOR_REFERENCE = "reference"
 ICON_SIGNAL_VARIANT = "mdi:signal-variant"
 ICON_WAVEFORM = "mdi:waveform"
 
+UNIT_COUNTS = "#"
+
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AT42QTDebug),
         cv.GenerateID(CONF_AT42QT_HUB_ID): cv.use_id(AT42QTHub),
         cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=11),
         cv.Optional(CONF_SENSOR_SIGNAL): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
+            unit_of_measurement=UNIT_COUNTS,
             icon=ICON_SIGNAL_VARIANT,
             accuracy_decimals=0,
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_SENSOR_REFERENCE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
+            unit_of_measurement=UNIT_COUNTS,
             icon=ICON_WAVEFORM,
             accuracy_decimals=0,
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
