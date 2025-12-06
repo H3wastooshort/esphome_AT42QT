@@ -7,8 +7,9 @@
 
 namespace esphome {
 namespace at42qt {
-static const char * i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
+static const char *const TAG = "at42qt";
 
+static const char * i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
 
 enum AT42QT2120_Registers
 {

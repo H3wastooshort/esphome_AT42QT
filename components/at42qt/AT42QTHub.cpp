@@ -29,7 +29,7 @@ void AT42QTHub::loop(){
 void AT42QTHub::dump_config(){
     LOG_I2C_DEVICE(this);
     for(auto *binary_sensor : this->binary_sensors_){
-        LOG_BINARY_SENSOR("  ", "Binary sensor", binary_sensor);
+        LOG_BINARY_SENSOR(TAG, "Binary sensor", binary_sensor);
     }
 }
 
