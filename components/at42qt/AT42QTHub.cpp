@@ -7,21 +7,13 @@ namespace at42qt {
 static const char *TAG = "at42qt.component";
 
 void AT42QTHub::setup(){
-    //TODO: check chip_id==0x3E
 
     uint8_t nzv=1;
     this->write_register((uint8_t)RESET, &nzv, 1);
-    
-    uint8_t thresh = 2; //default was 10, this is very low
-    for (uint8_t r = (uint8_t)KEY_DETECT_THRESHOLD; r<(uint8_t)KEY_CONTROL; r++)
-        this->write_register(r, &thresh, 1);
 
-    /*uint8_t oversample = 0x50; //oversample=4^5 scale=2^0
-    for (uint8_t r = (uint8_t)KEY_PULSE_SCALE; r<(uint8_t)KEY_SIGNAL; r++)
-        this->write_register(r, &oversample, 1);*/
-
-    uint8_t charge_time = 128;
-    this->write_register((uint8_t)CHARGE_DURATION, &charge_time, 1);
+    uint8_t chip_id = 0;
+    this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
+    if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
             
     this->write_register((uint8_t)CALIBRATE, &nzv, 1);
 }
@@ -39,6 +31,17 @@ void AT42QTHub::dump_config(){
     for(auto *binary_sensor : this->binary_sensors_){
         LOG_BINARY_SENSOR("  ", "Binary sensor", binary_sensor);
     }
+}
+
+void set_threshold(uint8_t channel, uint8_t threshold) {
+    this->write_register((uint8_t)KEY_DETECT_THRESHOLD + channel, &threshold, 1);
+}
+void set_oversampling(uint8_t channel, uint8_t oversampling) {
+    this->write_register((uint8_t)KEY_PULSE_SCALE + channel, &oversampling, 1);
+}
+
+void set_pulse_length(uint8_t pulse_length) {
+    this->write_register((uint8_t)CHARGE_DURATION, &pulse_length, 1);
 }
 
 } //namespace at42qt

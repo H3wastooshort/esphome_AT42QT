@@ -7,7 +7,7 @@
 
 namespace esphome {
 namespace at42qt {
-static const char * i2c_fail = "can't communicate";
+static const char * i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
 
 
 enum AT42QT2120_Registers
@@ -46,13 +46,14 @@ union AT42QT2120_Status {
   uint8_t bytes[4];
 };
 
+class AT42QTHub;
+
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
-  void set_channel(uint8_t channel) { channel_ = channel; }
-  void process(uint32_t data) { this->publish_state(static_cast<bool>(data & (1 << this->channel_))); }
-
+  AT42QTChannel(uint8_t channel) : hub(hub), channel(channel) {};
+  void process(uint32_t data) { this->publish_state(static_cast<bool>(data & (1 << this->channel))); }
  protected:
-  uint8_t channel_{0};
+  uint8_t channel{0};
 };
 
 class AT42QTHub : public Component, public i2c::I2CDevice {
@@ -61,6 +62,11 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   void setup() override;
   void loop() override;
   void dump_config() override;
+
+  void set_threshold(uint8_t channel, uint8_t threshold);
+  void set_oversampling(uint8_t channel, uint8_t oversampling);
+
+  void set_pulse_length(uint8_t pulse_length);
   
  protected:
   std::vector<AT42QTChannel *> binary_sensors_;
