@@ -8,6 +8,7 @@ void AT42QTHub::setup(){
     ESP_LOGD(TAG, "setting up...");
     uint8_t nzv=1;
     this->write_register((uint8_t)RESET, &nzv, 1);
+    delay(250); //TODO: make async
 
     uint8_t chip_id = 0;
     this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
