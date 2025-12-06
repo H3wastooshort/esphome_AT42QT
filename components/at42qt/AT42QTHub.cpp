@@ -91,7 +91,7 @@ void AT42QTChannel::dump_config(){
 
 
 uint8_t AT42QTDebug::get_channel() const {return this->channel;};
-uint8_t AT42QTDebug::get_wants_update() const {return this->wants_update;};
+bool AT42QTDebug::get_wants_update() const {return this->wants_update;};
 
 void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
     if (this->sensor_sig != nullptr) this->sensor_sig->publish_state(signal);
