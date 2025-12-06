@@ -50,7 +50,7 @@ union AT42QT2120_Status {
 
 class AT42QTHub;
 
-class AT42QTDebug : public sensor::Sensor, public PollingComponent {
+class AT42QTDebug : public PollingComponent {
  public:
   AT42QTDebug(uint8_t channel) : channel(channel) {};
   void process(uint8_t signal, uint8_t reference);
