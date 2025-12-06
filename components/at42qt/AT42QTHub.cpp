@@ -8,25 +8,29 @@ void AT42QTHub::setup(){
     ESP_LOGD(TAG, "setting up...");
     uint8_t nzv=1;
     this->write_register((uint8_t)RESET, &nzv, 1);
-    delay(250); //TODO: make async
 
-    uint8_t chip_id = 0;
-    this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
-    ESP_LOGD(TAG, "Chip ID is %02x.", chip_id);
-    if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
-    
-    //set parameters
-    this->set_pulse_length(this->pulse_length);
-    for(auto *chan : this->binary_sensors_) {
-        this->set_threshold(chan->get_channel(), chan->get_threshold());
-        this->set_oversampling(chan->get_channel(), chan->get_oversampling());
-    }
+    this->set_timeout(250, [this]() {//chip reset after approx 200ms
+        uint8_t chip_id = 0;
+        this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
+        ESP_LOGD(TAG, "Chip ID is %02x.", chip_id);
+        if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
+        
+        //set parameters
+        this->set_pulse_length(this->pulse_length);
+        for(auto *chan : this->binary_sensors_) {
+            this->set_threshold(chan->get_channel(), chan->get_threshold());
+            this->set_oversampling(chan->get_channel(), chan->get_oversampling());
+        }
 
-    this->write_register((uint8_t)CALIBRATE, &nzv, 1);
-    ESP_LOGD(TAG, "calibration started...");
+        uint8_t nzv=1;
+        this->write_register((uint8_t)CALIBRATE, &nzv, 1);
+        ESP_LOGD(TAG, "calibration started...");
+        this->finished_setup=true;
+    });
 }
 
 void AT42QTHub::loop(){
+    if (!this->finished_setup) return;
     static uint8_t cal_status = 255;
     AT42QT2120_Status status; 
     this->read_register((uint8_t)STATUS, &(status.bytes[0]), 4);

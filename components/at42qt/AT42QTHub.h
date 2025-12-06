@@ -80,6 +80,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
  protected:
   std::vector<AT42QTChannel *> binary_sensors_;
   uint8_t pulse_length{0};
+  bool finished_setup{false};
 };
 
 } //namespace at42qt
