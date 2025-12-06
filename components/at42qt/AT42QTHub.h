@@ -8,7 +8,7 @@
 
 namespace esphome {
 namespace at42qt {
-static const char *const TAG = "at42qt.component";
+static const char *const TAG = "at42qt";
 
 static const char *const i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
 

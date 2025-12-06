@@ -7,7 +7,7 @@ from . import AT42QTHub, CONF_AT42QT_HUB_ID, at42qt_ns
 DEPENDENCIES = ["at42qt"]
 CODEOWNERS = ["@h3wastooshort"]
 
-AT42QTDebug = at42qt_ns.class_("AT42QTDebug", cg.PollingComponent)
+AT42QTDebug = at42qt_ns.class_("AT42QTDebug", sensor.Sensor, cg.PollingComponent)
 
 CONF_SENSOR_SIGNAL = "signal"
 CONF_SENSOR_REFERENCE = "reference"
