@@ -53,7 +53,6 @@ class AT42QTHub;
 class AT42QTDebug : public sensor::Sensor, public PollingComponent {
  public:
   AT42QTDebug(uint8_t channel) : channel(channel) {};
-  void dump_config();
   void process(uint8_t signal, uint8_t reference);
   uint8_t get_channel() const;
   bool get_wants_update() const;
