@@ -82,7 +82,7 @@ uint8_t AT42QTChannel::get_threshold() const {return this->threshold;};
 uint8_t AT42QTChannel::get_oversampling() const {return this->oversampling;};
 
 void AT42QTChannel::dump_config(){
-    LOG_BINARY_SENSOR(TAG, "Binary sensor", this);
+    LOG_BINARY_SENSOR(TAG, "touch sensor", this);
     ESP_LOGD(TAG, "Channel: %d", this->channel);
     ESP_LOGD(TAG, "Threshold: %d", this->threshold);
     ESP_LOGD(TAG, "Oversampling: %02x", this->oversampling);
@@ -97,6 +97,12 @@ void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
     if (this->sensor_sig != nullptr) this->sensor_sig->publish_state(signal);
     if (this->sensor_sig != nullptr) this->sensor_ref->publish_state(reference);
     this->wants_update=false;
+}
+
+void AT42QTDebug::dump_config(){
+    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, "signal sensor", sensor_sig);
+    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, "reference sensor", sensor_ref);
+    ESP_LOGD(TAG, "Channel: %d", this->channel);
 }
 
 } //namespace at42qt
