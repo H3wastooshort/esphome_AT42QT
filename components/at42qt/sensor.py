@@ -34,13 +34,16 @@ CONFIG_SCHEMA = cv.Schema(
     }
 ).extend(cv.polling_component_schema("10s"))
 
-async def to_code(config):
-    hub = await cg.get_variable(config[CONF_AT42QT_HUB_ID])
-    var = await sensor.new_sensor(config, config[CONF_CHANNEL])
+async def to_code(config):    
+    var = cg.new_Pvariable(config[CONF_ID])
+    await cg.register_component(var, config)
+
     if CONF_SENSOR_SIGNAL in config:
         sens = await sensor.new_sensor(config[CONF_SENSOR_SIGNAL])
         cg.add(var.set_sensor_sig(sens))
     if CONF_SENSOR_REFERENCE in config:
         sens = await sensor.new_sensor(config[CONF_SENSOR_REFERENCE])
-        cg.add(var.set_sensor_ref(sens))  
+        cg.add(var.set_sensor_ref(sens))
+
+    hub = await cg.get_variable(config[CONF_AT42QT_HUB_ID])  
     cg.add(hub.register_debug(var))
