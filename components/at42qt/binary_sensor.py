@@ -22,7 +22,5 @@ CONFIG_SCHEMA = (
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_AT42QT_HUB_ID])
-    var = await binary_sensor.new_binary_sensor(config, config[CONF_CHANNEL])
-    cg.add(hub.set_threshold(config[CONF_CHANNEL], config[CONF_THRESHOLD]))
-    cg.add(hub.set_oversampling(config[CONF_CHANNEL], config[CONF_OVERSAMPLING]))
+    var = await binary_sensor.new_binary_sensor(config, config[CONF_CHANNEL], config[CONF_THRESHOLD], config[CONF_OVERSAMPLING])
     cg.add(hub.register_channel(var))

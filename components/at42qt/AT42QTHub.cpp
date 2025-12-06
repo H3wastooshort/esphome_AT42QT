@@ -12,12 +12,18 @@ void AT42QTHub::setup(){
     uint8_t chip_id = 0;
     this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
     if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
-            
+    
+    //set parameters
+    this->set_pulse_length(this->initial_pulse_length);
+    for(auto *chan : this->binary_sensors_) {
+        this->set_threshold(chan->get_channel(), chan->get_threshold());
+        this->set_oversampling(chan->get_channel(), chan->get_oversampling());
+    }
+
     this->write_register((uint8_t)CALIBRATE, &nzv, 1);
 }
 
 void AT42QTHub::loop(){
-    //TODO: check chip_id==0x3E
     AT42QT2120_Status status; 
     this->read_register((uint8_t)STATUS, &(status.bytes[0]), 4);
     if (status.calibrating) return;
@@ -41,6 +47,10 @@ void AT42QTHub::set_oversampling(uint8_t channel, uint8_t oversampling) {
 void AT42QTHub::set_pulse_length(uint8_t pulse_length) {
     this->write_register((uint8_t)CHARGE_DURATION, &pulse_length, 1);
 }
+
+uint8_t AT42QTChannel::get_channel() const {return this->channel;};
+uint8_t AT42QTChannel::get_threshold() const {return this->threshold;};
+uint8_t AT42QTChannel::get_oversampling() const {return this->oversampling;};
 
 } //namespace at42qt
 } //namespace esphome

@@ -9,7 +9,7 @@ namespace esphome {
 namespace at42qt {
 static const char *const TAG = "at42qt.component";
 
-static const char * i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
+static const char *const i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
 
 enum AT42QT2120_Registers
 {
@@ -51,14 +51,21 @@ class AT42QTHub;
 
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
-  AT42QTChannel(uint8_t channel) : channel(channel) {};
+  AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
   void process(uint32_t data) { this->publish_state(static_cast<bool>(data & (1 << this->channel))); }
+
+  uint8_t get_channel() const;
+  uint8_t get_threshold() const;
+  uint8_t get_oversampling() const;
  protected:
   uint8_t channel{0};
+  uint8_t threshold{10};
+  uint8_t oversampling{0};
 };
 
 class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
+  AT42QTHub(uint8_t pulse_length) : initial_pulse_length(pulse_length) {}
   void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
   void setup() override;
   void loop() override;
@@ -71,6 +78,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   
  protected:
   std::vector<AT42QTChannel *> binary_sensors_;
+  uint8_t initial_pulse_length{0};
 };
 
 } //namespace at42qt
