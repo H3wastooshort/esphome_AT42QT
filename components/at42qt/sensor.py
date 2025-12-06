@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor
-from esphome.const import CONF_ID, UNIT_EMPTY, ICON_EMPTY
+from esphome.const import CONF_ID, CONF_CHANNEL, UNIT_EMPTY
 from . import AT42QTHub, CONF_AT42QT_HUB_ID, at42qt_ns
 
 DEPENDENCIES = ["at42qt"]
@@ -11,6 +11,9 @@ EmptyCompoundSensor = at42qt_ns.class_("AT42QTDebug", cg.PollingComponent)
 CONF_SENSOR_SIGNAL = "signal"
 CONF_SENSOR_REFERENCE = "reference"
 
+ICON_SIGNAL_VARIANT = "mdi:signal-variant"
+ICON_WAVEFORM = "mdi:waveform"
+
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_AT42QT_HUB_ID): cv.use_id(AT42QTHub),
@@ -18,14 +21,14 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_SENSOR_SIGNAL): sensor.sensor_schema(
             EmptyCompoundSensor,
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_EMPTY,
+            icon=ICON_SIGNAL_VARIANT,
             accuracy_decimals=0,
             entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
         ).extend(),
         cv.Optional(CONF_SENSOR_REFERENCE): sensor.sensor_schema(
             EmptyCompoundSensor,
             unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_EMPTY,
+            icon=ICON_WAVEFORM,
             accuracy_decimals=0,
             entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
         ).extend(),
