@@ -1,8 +1,9 @@
 UNFINISHED!!
-currently works for AT42QT2120. others need work
+
+currently works for AT42QT2120. others can be added
 
 ### Example
-´´´yaml
+```yaml
 i2c:
   scl: GPIO5
   sda: GPIO6
@@ -44,8 +45,8 @@ sensor:
     reference:
       name: "Touch 2 Reference"
     update_interval: 10s
-´´´
+```
 
 ### Parts of Code taken from:
-https://github.com/janelia-arduino/AT42QT/ by Peter Polidoro (peter@polidoro.io)
-https://github.com/esphome/esphome/blob/dev/esphome/components/cap1188/
+ - https://github.com/janelia-arduino/AT42QT/ by Peter Polidoro (peter@polidoro.io)
+ - https://github.com/esphome/esphome/blob/dev/esphome/components/cap1188/
