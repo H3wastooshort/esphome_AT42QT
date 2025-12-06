@@ -5,6 +5,7 @@ from esphome.const import CONF_ID, CONF_CHANNEL, UNIT_EMPTY
 from . import AT42QTHub, CONF_AT42QT_HUB_ID, at42qt_ns
 
 DEPENDENCIES = ["at42qt"]
+CODEOWNERS = ["@h3wastooshort"]
 
 AT42QTDebug = at42qt_ns.class_("AT42QTDebug", cg.PollingComponent)
 
@@ -20,12 +21,14 @@ CONFIG_SCHEMA = cv.Schema(
         cv.GenerateID(CONF_AT42QT_HUB_ID): cv.use_id(AT42QTHub),
         cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=11),
         cv.Optional(CONF_SENSOR_SIGNAL): sensor.sensor_schema(
+            AT42QTDebug,
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_SIGNAL_VARIANT,
             accuracy_decimals=0,
             entity_category=cg.EntityCategory.ENTITY_CATEGORY_DIAGNOSTIC,
         ).extend(),
         cv.Optional(CONF_SENSOR_REFERENCE): sensor.sensor_schema(
+            AT42QTDebug,
             unit_of_measurement=UNIT_EMPTY,
             icon=ICON_WAVEFORM,
             accuracy_decimals=0,

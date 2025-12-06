@@ -5,6 +5,7 @@ from esphome.const import CONF_ID, CONF_RESET_PIN, CONF_PULSE_LENGTH
 
 MULTI_CONF = True
 DEPENDENCIES = ["i2c"]
+CODEOWNERS = ["@h3wastooshort"]
 
 CONF_AT42QT_HUB_ID = "at42qt_hub_id"
 
