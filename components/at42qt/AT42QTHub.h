@@ -89,7 +89,7 @@ class AT42QTChannel : public binary_sensor::BinarySensor {
 
 class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
-  AT42QTHub(uint8_t pulse_length) : pulse_length(pulse_length) {}
+  AT42QTHub(uint8_t charge_time, uint8_t toward_touch_drift, uint8_t away_touch_drift, uint8_t detection_integrator, uint8_t touch_recal_delay, uint8_t drift_hold_time) : charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
   void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
   void register_debug(AT42QTDebug *obj) { this->sensors_.push_back(obj); }
   void setup() override;
@@ -99,13 +99,25 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   void set_threshold(uint8_t channel, uint8_t threshold);
   void set_oversampling(uint8_t channel, uint8_t oversampling);
 
-  void set_pulse_length(uint8_t pulse_length);
+  //names from datasheet at https://ww1.microchip.com/downloads/en/DeviceDoc/doc9634.pdf
+  void set_charge_time(uint8_t charge_time);
+  void set_toward_touch_drift(uint8_t toward_touch_drift);
+  void set_away_touch_drift(uint8_t away_touch_drift);
+  void set_detection_integrator(uint8_t detection_integrator);
+  void set_touch_recal_delay(uint8_t touch_recal_delay);
+  void set_drift_hold_time(uint8_t drift_hold_time);  
   
  protected:
   std::vector<AT42QTChannel *> binary_sensors_;
   std::vector<AT42QTDebug *> sensors_;
-  uint8_t pulse_length{0};
   bool finished_setup{false};
+  
+  uint8_t charge_time;
+  uint8_t toward_touch_drift;
+  uint8_t away_touch_drift;
+  uint8_t detection_integrator;
+  uint8_t touch_recal_delay;
+  uint8_t drift_hold_time;  
 };
 
 } //namespace at42qt

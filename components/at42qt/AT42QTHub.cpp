@@ -16,7 +16,12 @@ void AT42QTHub::setup(){
         if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
         
         //set parameters
-        this->set_pulse_length(this->pulse_length);
+        this->set_charge_time(this->charge_time);
+        this->set_toward_touch_drift(this->toward_touch_drift);
+        this->set_away_touch_drift(this->away_touch_drift);
+        this->set_detection_integrator(this->detection_integrator);
+        this->set_touch_recal_delay(this->touch_recal_delay);
+        this->set_drift_hold_time(this->drift_hold_time);  
         for(auto *chan : this->binary_sensors_) {
             this->set_threshold(chan->get_channel(), chan->get_threshold());
             this->set_oversampling(chan->get_channel(), chan->get_oversampling());
@@ -57,7 +62,12 @@ void AT42QTHub::dump_config(){
     LOG_I2C_DEVICE(this);
     for(auto *chan : this->binary_sensors_)
         chan->dump_config();
-    ESP_LOGD(TAG, "Pulse length: %d", this->pulse_length);
+    ESP_LOGD(TAG, "Pulse Length: %d", this->charge_time);
+    ESP_LOGD(TAG, "Toward Touch-Drift: %d", this-> toward_touch_drift);
+    ESP_LOGD(TAG, "Away Touch-Drift: %d", this-> away_touch_drift);
+    ESP_LOGD(TAG, "detection_integrator: %d", this-> detection_integrator);
+    ESP_LOGD(TAG, "Touch Recal Delay: %d", this-> touch_recal_delay);
+    ESP_LOGD(TAG, "Drift Hold Time: %d", this-> drift_hold_time); 
 }
 
 void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
@@ -69,12 +79,36 @@ void AT42QTHub::set_oversampling(uint8_t channel, uint8_t oversampling) {
     ESP_LOGD(TAG, "Set channel %d oversampling to %02x.", channel, oversampling);
 }
 
-void AT42QTHub::set_pulse_length(uint8_t pulse_length) {
-    this->write_register((uint8_t)CHARGE_DURATION, &pulse_length, 1);
-    this->pulse_length=pulse_length;
-    ESP_LOGD(TAG, "Set pulse_length to %d.", pulse_length);
+void AT42QTHub::set_charge_time(uint8_t charge_time) {
+    this->write_register((uint8_t)CHARGE_DURATION, &charge_time, 1);
+    this->charge_time=charge_time;
+    ESP_LOGD(TAG, "Set charge_time to %d.", charge_time);
 }
-
+void AT42QTHub::set_toward_touch_drift(uint8_t toward_touch_drift) {
+    this->write_register((uint8_t)TOWARDS_DRIFT_COMPENSATION_DURATION, &toward_touch_drift, 1);
+    this->toward_touch_drift=toward_touch_drift;
+    ESP_LOGD(TAG, "Set toward_touch_drift to %d.", toward_touch_drift);
+}
+void AT42QTHub::set_away_touch_drift(uint8_t away_touch_drift) {
+    this->write_register((uint8_t)AWAY_DRIFT_COMPENSATION_DURATION, &away_touch_drift, 1);
+    this->away_touch_drift=away_touch_drift;
+    ESP_LOGD(TAG, "Set away_touch_drift to %d.", away_touch_drift);
+}
+void AT42QTHub::set_detection_integrator(uint8_t detection_integrator) {
+    this->write_register((uint8_t)DETECTION_INTEGRATOR, &detection_integrator, 1);
+    this->detection_integrator=detection_integrator;
+    ESP_LOGD(TAG, "Set detection_integrator to %d.", detection_integrator);
+}
+void AT42QTHub::set_touch_recal_delay(uint8_t touch_recal_delay) {
+    this->write_register((uint8_t)RECALIBRATION_DELAY, &touch_recal_delay, 1);
+    this->touch_recal_delay=touch_recal_delay;
+    ESP_LOGD(TAG, "Set charge_time to %d.", touch_recal_delay);
+}
+void AT42QTHub::set_drift_hold_time(uint8_t drift_hold_time) {
+    this->write_register((uint8_t)DRIFT_COMPENSATION_HOLD_DURATION, &drift_hold_time, 1);
+    this->drift_hold_time=drift_hold_time;
+    ESP_LOGD(TAG, "Set drift_hold_time to %d.", drift_hold_time);
+}
 
 
 uint8_t AT42QTChannel::get_channel() const {return this->channel;};
