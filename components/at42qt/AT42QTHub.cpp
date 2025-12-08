@@ -12,7 +12,7 @@ void AT42QTHub::setup(){
     this->set_timeout(250, [this]() {//chip reset after approx 200ms
         uint8_t chip_id = 0;
         this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
-        ESP_LOGD(TAG, "chip ID is %02x.", chip_id);
+        ESP_LOGD(TAG, "chip ID is 0x%02x.", chip_id);
         if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
         
         //write inital parameters to chip
@@ -87,7 +87,7 @@ void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
 }
 void AT42QTHub::set_oversampling(uint8_t channel, uint8_t oversampling) {
     this->write_register((uint8_t)KEY_PULSE_SCALE + channel, &oversampling, 1);
-    ESP_LOGD(TAG, "Set channel %d oversampling to %02x.", channel, oversampling);
+    ESP_LOGD(TAG, "Set channel %d oversampling to 0x%02x.", channel, oversampling);
 }
 
 void AT42QTHub::set_charge_time(uint8_t charge_time) {
@@ -131,7 +131,7 @@ void AT42QTChannel::dump_config(){
     ESP_LOGCONFIG(TAG,
         " Channel: %d\n"
         " Threshold: %d\n"
-        " Oversampling: %02x",
+        " Oversampling: 0x%02x",
         this->channel,
         this->threshold,
         this->oversampling
