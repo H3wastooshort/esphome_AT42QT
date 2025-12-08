@@ -5,14 +5,15 @@ namespace esphome {
 namespace at42qt {
 
 void AT42QTHub::setup(){
-    ESP_LOGD(TAG, "setting up...");
+    ESP_LOGV(TAG, "resetting chip");
     uint8_t nzv=1;
     this->write_register((uint8_t)RESET, &nzv, 1);
 
     this->set_timeout(250, [this]() {//chip reset after approx 200ms
+        ESP_LOGV(TAG, "setting registers");
         uint8_t chip_id = 0;
         this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
-        ESP_LOGD(TAG, "Chip ID is %02x.", chip_id);
+        ESP_LOGD(TAG, "chip ID is %02x.", chip_id);
         if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
         
         //write inital parameters to chip
@@ -29,7 +30,7 @@ void AT42QTHub::setup(){
 
         uint8_t nzv=1;
         this->write_register((uint8_t)CALIBRATE, &nzv, 1);
-        ESP_LOGD(TAG, "calibration started...");
+        ESP_LOGV(TAG, "calibration started");
         this->finished_setup=true;
     });
 }
@@ -59,15 +60,24 @@ void AT42QTHub::loop(){
 }
 
 void AT42QTHub::dump_config(){
+    ESP_LOGCONFIG(TAG,
+        "AT42QT touch sensor:"
+        "  Pulse Length: %d\n"
+        "  Toward Touch-Drift: %d\n"
+        "  Away Touch-Drift: %d\n"
+        "  Deglitch: %d\n"
+        "  Touch Recal Delay: %d\n"
+        "  Drift Hold Time: %d",
+        this->charge_time,
+        this-> toward_touch_drift,
+        this-> away_touch_drift,
+        this-> detection_integrator,
+        this-> touch_recal_delay,
+        this-> drift_hold_time
+    );
     LOG_I2C_DEVICE(this);
     for(auto *chan : this->binary_sensors_)
         chan->dump_config();
-    ESP_LOGD(TAG, "Pulse Length: %d", this->charge_time);
-    ESP_LOGD(TAG, "Toward Touch-Drift: %d", this-> toward_touch_drift);
-    ESP_LOGD(TAG, "Away Touch-Drift: %d", this-> away_touch_drift);
-    ESP_LOGD(TAG, "Deglitch: %d", this-> detection_integrator);
-    ESP_LOGD(TAG, "Touch Recal Delay: %d", this-> touch_recal_delay);
-    ESP_LOGD(TAG, "Drift Hold Time: %d", this-> drift_hold_time); 
 }
 
 void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
@@ -116,10 +126,15 @@ uint8_t AT42QTChannel::get_threshold() const {return this->threshold;};
 uint8_t AT42QTChannel::get_oversampling() const {return this->oversampling;};
 
 void AT42QTChannel::dump_config(){
-    LOG_BINARY_SENSOR(TAG, "touch sensor", this);
-    ESP_LOGD(TAG, "Channel: %d", this->channel);
-    ESP_LOGD(TAG, "Threshold: %d", this->threshold);
-    ESP_LOGD(TAG, "Oversampling: %02x", this->oversampling);
+    LOG_BINARY_SENSOR(TAG, " Touch Key", this);
+    ESP_LOGCONFIG(TAG,
+        " Channel: %d"
+        " Threshold: %d"
+        " Oversampling: %02x",
+        this->channel,
+        this->threshold,
+        this->oversampling
+    );
 }
 
 
@@ -134,9 +149,13 @@ void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
 }
 
 void AT42QTDebug::dump_config(){
-    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, "signal sensor", sensor_sig);
-    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, "reference sensor", sensor_ref);
-    ESP_LOGD(TAG, "Channel: %d", this->channel);
+    ESP_LOGCONFIG(TAG,
+        "AT42QT Debug Sensor\n"
+        "  Channel: %d",
+        this->channel
+    );
+    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " signal", sensor_sig);
+    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " reference", sensor_ref);
 }
 
 } //namespace at42qt
