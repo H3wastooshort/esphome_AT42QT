@@ -10,13 +10,13 @@ void AT42QTHub::setup(){
     this->write_register((uint8_t)RESET, &nzv, 1);
 
     this->set_timeout(250, [this]() {//chip reset after approx 200ms
-        ESP_LOGV(TAG, "setting registers");
         uint8_t chip_id = 0;
         this->read_register((uint8_t)CHIP_ID, &chip_id, 1);
         ESP_LOGD(TAG, "chip ID is %02x.", chip_id);
         if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
         
         //write inital parameters to chip
+        ESP_LOGV(TAG, "setting registers");
         this->set_charge_time(this->charge_time);
         this->set_toward_touch_drift(this->toward_touch_drift);
         this->set_away_touch_drift(this->away_touch_drift);
@@ -24,6 +24,7 @@ void AT42QTHub::setup(){
         this->set_touch_recal_delay(this->touch_recal_delay);
         this->set_drift_hold_time(this->drift_hold_time);  
         for(auto *chan : this->binary_sensors_) {
+            //go through all channels, read their config, write it to chip
             this->set_threshold(chan->get_channel(), chan->get_threshold());
             this->set_oversampling(chan->get_channel(), chan->get_oversampling());
         }
@@ -61,7 +62,7 @@ void AT42QTHub::loop(){
 
 void AT42QTHub::dump_config(){
     ESP_LOGCONFIG(TAG,
-        "AT42QT touch sensor:"
+        "Touch-Hub:\n"
         "  Pulse Length: %d\n"
         "  Toward Touch-Drift: %d\n"
         "  Away Touch-Drift: %d\n"
@@ -77,7 +78,7 @@ void AT42QTHub::dump_config(){
     );
     LOG_I2C_DEVICE(this);
     for(auto *chan : this->binary_sensors_)
-        chan->dump_config();
+        chan->dump_config(); //channels are not Compnents, thus the hub has to call this manually
 }
 
 void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
@@ -128,8 +129,8 @@ uint8_t AT42QTChannel::get_oversampling() const {return this->oversampling;};
 void AT42QTChannel::dump_config(){
     LOG_BINARY_SENSOR(TAG, " Touch Key", this);
     ESP_LOGCONFIG(TAG,
-        " Channel: %d"
-        " Threshold: %d"
+        " Channel: %d\n"
+        " Threshold: %d\n"
         " Oversampling: %02x",
         this->channel,
         this->threshold,
@@ -150,10 +151,11 @@ void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
 
 void AT42QTDebug::dump_config(){
     ESP_LOGCONFIG(TAG,
-        "AT42QT Debug Sensor\n"
+        "Debug Sensor\n"
         "  Channel: %d",
         this->channel
     );
+    //TODO: nicer output here, indent sensor log
     if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " signal", sensor_sig);
     if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " reference", sensor_ref);
 }
