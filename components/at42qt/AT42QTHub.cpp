@@ -15,7 +15,7 @@ void AT42QTHub::setup(){
         ESP_LOGD(TAG, "Chip ID is %02x.", chip_id);
         if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
         
-        //set parameters
+        //write inital parameters to chip
         this->set_charge_time(this->charge_time);
         this->set_toward_touch_drift(this->toward_touch_drift);
         this->set_away_touch_drift(this->away_touch_drift);
@@ -65,7 +65,7 @@ void AT42QTHub::dump_config(){
     ESP_LOGD(TAG, "Pulse Length: %d", this->charge_time);
     ESP_LOGD(TAG, "Toward Touch-Drift: %d", this-> toward_touch_drift);
     ESP_LOGD(TAG, "Away Touch-Drift: %d", this-> away_touch_drift);
-    ESP_LOGD(TAG, "detection_integrator: %d", this-> detection_integrator);
+    ESP_LOGD(TAG, "Deglitch: %d", this-> detection_integrator);
     ESP_LOGD(TAG, "Touch Recal Delay: %d", this-> touch_recal_delay);
     ESP_LOGD(TAG, "Drift Hold Time: %d", this-> drift_hold_time); 
 }
