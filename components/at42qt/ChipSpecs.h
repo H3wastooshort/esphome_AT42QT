@@ -4,8 +4,12 @@
 #include <map>
 #include <cstdint>
 
-//Lists from https://github.com/janelia-arduino/AT42QT/blob/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT/RegisterAddresses.h
+//Register addresses from https://github.com/janelia-arduino/AT42QT/blob/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT/RegisterAddresses.h
 
+namespace esphome {
+namespace at42qt {
+
+// -- Register Maps -- //
 enum AT42QTRegister { //enum of all possible registers, to be used in chip-specific std::map
     ACTIVE_LEVEL_MASK,
     ADJACENT_KEY_SUPRESSION_MASK,
@@ -139,17 +143,64 @@ std::map<AT42QTRegister, uint8_t> reg_AT42QT2160 {
   {KEY_REFERENCE, 132},
 };
 
-struct AT42QTSpec {
-    std::map<AT42QTRegister, uint8_t>* regmap = nullptr;
-    uint8_t keycount = 0;
-    uint8_t chip_id = 0;
-    uint8_t i2c_addr = 0;
+
+// -- status-parsing -- //
+struct AT42QTStatus {
+    bool any_key_touched;
+    bool overflow;
+    bool calibrating;
+    uint16_t keys;
 };
+
+// -- Spec Classes -- //
+class AT42QTSpec {
+  protected:
+    uint8_t keycount;
+    uint8_t chip_id;
+    uint8_t i2c_addr;
+    std::map<AT42QTRegister, uint8_t>* regmap;
+    //This base class cannot be instatniated publicly. Only classes inhereting from it can. Those then define keycount, chip_id, ...
+    AT42QTSpec(uint8_t keycount, uint8_t chip_id, uint8_t i2c_addr, std::map<AT42QTRegister, uint8_t>* regmap) : keycount(keycount), chip_id(chip_id), i2c_addr(i2c_addr), regmap(regmap) {};
+  public:
+    virtual AT42QTStatus statparse(const uint8_t &(status[4]));
+    uint8_t get_keycount() {return this->keycount;};
+    uint8_t get_chip_id() {return this->chip_id;};
+    uint8_t get_i2c_addr() {return this->i2c_addr;};
+};
+
+class AT42QT2120Spec final : public AT42QTSpec {
+  AT42QT2120Spec() : AT42QTSpec(12, 0x3E, 0x1C, &reg_AT42QT2120) {};
+  AT42QTStatus statparse(const uint8_t &(status[4])) {
+    union AT42QT2120Status {
+      struct {
+        uint32_t any_key_touched : 1;
+        uint32_t slider_or_wheel : 1;
+        uint32_t space0 : 4;
+        uint32_t overflow : 1;
+        uint32_t calibrating : 1;
+        uint32_t keys: 12;
+        uint32_t space1 : 4;
+        uint32_t slider_or_wheel_position : 8;
+      };
+      uint8_t bytes[4];
+    } input;
+    input.bytes=status;
+    AT42QTStatus ret;
+    ret.keys=input.keys;
+    ret.overflow=input.overflow;
+  }
+};
+
+
+// -- Final Mapping -- //
 
 //keycount, chipID, addr, from https://github.com/janelia-arduino/AT42QT/tree/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT
 std::map<uint16_t, struct AT42QTSpec> chipnum_to_spec{
-    {1060, {&reg_AT42QT1060, 6, 0x31, 0x12}},
-    {1070, {&reg_AT42QT1070, 7, 0x2E, 0x1B}},
-    {2120, {&reg_AT42QT2120, 12}},
-    {2160, {&reg_AT42QT2160, 16, 0x11, 0x0D}}
+    {1060, {6, 0x31, 0x12, &reg_AT42QT1060, &statparse<AT42QTxStatus>}},
+    {1070, {7, 0x2E, 0x1B, &reg_AT42QT1070, &statparse<AT42QTxStatus>}},
+    {2120, {12, 0x3E, 0x1C, &reg_AT42QT2120, &statparse<AT42QT2120Status>}},
+    {2160, {16, 0x11, 0x0D, &reg_AT42QT2160, &statparse<AT42QTxStatus>}}
 };
+
+} //namespace at42qt
+} //namespace esphome
