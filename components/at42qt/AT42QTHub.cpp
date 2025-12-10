@@ -57,7 +57,7 @@ void AT42QTHub::loop(){
 
     //send keystate to binsensors
     for(auto *chan : this->binary_sensors_) {
-        binary_sensor->process(status.keys);
+        chan->process(status.keys);
     }
     
     //update debug sensors on demand
