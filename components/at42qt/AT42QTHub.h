@@ -54,7 +54,7 @@ class AT42QTChannel : public binary_sensor::BinarySensor {
 
 class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
-  AT42QTHub(const uint16_t chip_num, const uint8_t charge_time, const uint8_t toward_touch_drift, const uint8_t away_touch_drift, const uint8_t detection_integrator, const uint8_t touch_recal_delay, const uint8_t drift_hold_time) : chip_spec(chipnum_to_spec[chip_num]), charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
+  AT42QTHub(const uint16_t chip_num, const uint8_t charge_time, const uint8_t toward_touch_drift, const uint8_t away_touch_drift, const uint8_t detection_integrator, const uint8_t touch_recal_delay, const uint8_t drift_hold_time) : chip_spec(chipnum_to_spec.at(chip_num)), charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
   AT42QTHub(const AT42QTSpec* chip_spec, const uint8_t charge_time, const uint8_t toward_touch_drift, const uint8_t away_touch_drift, const uint8_t detection_integrator, const uint8_t touch_recal_delay, const uint8_t drift_hold_time) : chip_spec(chip_spec), charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
   void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
   void register_debug(AT42QTDebug *obj) { this->sensors_.push_back(obj); }

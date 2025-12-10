@@ -7,11 +7,11 @@ namespace at42qt {
 void AT42QTHub::setup(){
     ESP_LOGV(TAG, "resetting chip");
     uint8_t nzv=1;
-    this->write_register(this->chip_spec->regmap[RESET], &nzv, 1);
+    this->write_register(this->chip_spec->regmap->at(RESET), &nzv, 1);
 
     this->set_timeout(250, [this]() {//chip reset after approx 200ms
         uint8_t chip_id = 0;
-        this->read_register(this->chip_spec->regmap[CHIP_ID], &chip_id, 1);
+        this->read_register(this->chip_spec->regmap->at(CHIP_ID), &chip_id, 1);
         ESP_LOGD(TAG, "chip ID is 0x%02x.", chip_id);
         if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
         
@@ -30,7 +30,7 @@ void AT42QTHub::setup(){
         }
 
         uint8_t nzv=1;
-        this->write_register(this->chip_spec->regmap[CALIBRATE], &nzv, 1);
+        this->write_register(this->chip_spec->regmap->at(CALIBRATE), &nzv, 1);
         ESP_LOGV(TAG, "calibration started");
         this->finished_setup=true;
     });
@@ -44,7 +44,7 @@ void AT42QTHub::loop(){
         uint32_t i;
         uint8_t b[4]; 
     } chip_reg;
-    this->read_register(this->chip_spec->regmap[STATUS], &(chip_reg.b[0]), 4);
+    this->read_register(this->chip_spec->regmap->at(STATUS), &(chip_reg.b[0]), 4);
     AT42QTStatus status = parse_status(chip_reg.i);
 
     //check that cal has ended
@@ -65,9 +65,9 @@ void AT42QTHub::loop(){
         if (sensor->get_wants_update()) {
             uint8_t chan = sensor->get_channel();
             uint8_t signal = 0;
-            this->read_register(this->chip_spec->regmap[KEY_SIGNAL]+chan, &signal, 1);
+            this->read_register(this->chip_spec->regmap->at(KEY_SIGNAL]+chan, &signal, 1);
             uint8_t reference = 0;
-            this->read_register(this->chip_spec->regmap[KEY_REFERENCE]+chan, &reference, 1);
+            this->read_register(this->chip_spec->regmap->at(KEY_REFERENCE]+chan, &reference, 1);
             sensor->process(signal, reference);
         }
 }
@@ -104,41 +104,41 @@ void AT42QTHub::dump_config(){
 }
 
 void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
-    this->write_register(this->chip_spec->regmap[KEY_DETECT_THRESHOLD] + channel, &threshold, 1);
+    this->write_register(this->chip_spec->regmap->at(KEY_DETECT_THRESHOLD) + channel, &threshold, 1);
     ESP_LOGD(TAG, "Set channel %d threshold to %d.", channel, threshold);
 }
 void AT42QTHub::set_oversampling(uint8_t channel, uint8_t oversampling) {
-    this->write_register(this->chip_spec->regmap[KEY_PULSE_SCALE] + channel, &oversampling, 1);
+    this->write_register(this->chip_spec->regmap->at(KEY_PULSE_SCALE) + channel, &oversampling, 1);
     ESP_LOGD(TAG, "Set channel %d oversampling to 0x%02x.", channel, oversampling);
 }
 
 void AT42QTHub::set_charge_time(uint8_t charge_time) {
-    this->write_register(this->chip_spec->regmap[CHARGE_DURATION], &charge_time, 1);
+    this->write_register(this->chip_spec->regmap->at(CHARGE_DURATION), &charge_time, 1);
     this->charge_time=charge_time;
     ESP_LOGD(TAG, "Set charge_time to %d.", charge_time);
 }
 void AT42QTHub::set_toward_touch_drift(uint8_t toward_touch_drift) {
-    this->write_register(this->chip_spec->regmap[TOWARDS_DRIFT_COMPENSATION_DURATION], &toward_touch_drift, 1);
+    this->write_register(this->chip_spec->regmap->at(TOWARDS_DRIFT_COMPENSATION_DURATION), &toward_touch_drift, 1);
     this->toward_touch_drift=toward_touch_drift;
     ESP_LOGD(TAG, "Set toward_touch_drift to %d.", toward_touch_drift);
 }
 void AT42QTHub::set_away_touch_drift(uint8_t away_touch_drift) {
-    this->write_register(this->chip_spec->regmap[AWAY_DRIFT_COMPENSATION_DURATION], &away_touch_drift, 1);
+    this->write_register(this->chip_spec->regmap->at(AWAY_DRIFT_COMPENSATION_DURATION), &away_touch_drift, 1);
     this->away_touch_drift=away_touch_drift;
     ESP_LOGD(TAG, "Set away_touch_drift to %d.", away_touch_drift);
 }
 void AT42QTHub::set_detection_integrator(uint8_t detection_integrator) {
-    this->write_register(this->chip_spec->regmap[DETECTION_INTEGRATOR], &detection_integrator, 1);
+    this->write_register(this->chip_spec->regmap->at(DETECTION_INTEGRATOR), &detection_integrator, 1);
     this->detection_integrator=detection_integrator;
     ESP_LOGD(TAG, "Set detection_integrator to %d.", detection_integrator);
 }
 void AT42QTHub::set_touch_recal_delay(uint8_t touch_recal_delay) {
-    this->write_register(this->chip_spec->regmap[RECALIBRATION_DELAY], &touch_recal_delay, 1);
+    this->write_register(this->chip_spec->regmap->at(RECALIBRATION_DELAY), &touch_recal_delay, 1);
     this->touch_recal_delay=touch_recal_delay;
     ESP_LOGD(TAG, "Set charge_time to %d.", touch_recal_delay);
 }
 void AT42QTHub::set_drift_hold_time(uint8_t drift_hold_time) {
-    this->write_register(this->chip_spec->regmap[DRIFT_COMPENSATION_HOLD_DURATION], &drift_hold_time, 1);
+    this->write_register(this->chip_spec->regmap->at(DRIFT_COMPENSATION_HOLD_DURATION), &drift_hold_time, 1);
     this->drift_hold_time=drift_hold_time;
     ESP_LOGD(TAG, "Set drift_hold_time to %d.", drift_hold_time);
 }

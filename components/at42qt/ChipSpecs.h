@@ -8,7 +8,7 @@ namespace esphome {
 namespace at42qt {
 
 // -- Register Maps -- //
-enum AT42QTRegister { //enum of all possible registers, to be used in chip-specific std::map
+enum AT42QTRegister : uint8_t { //enum of all possible registers, to be used in chip-specific std::map
     ACTIVE_LEVEL_MASK,
     ADJACENT_KEY_SUPRESSION_MASK,
     AWAY_DRIFT_COMPENSATION_DURATION,
