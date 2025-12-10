@@ -75,15 +75,6 @@ struct AT42QTSpec {
     const AT42QTStatusBitmap *bitmap;
 };
 
-AT42QTStatus parse_status(uint32_t status, const AT42QTSpec *spec) {
-  AT42QTStatus ret;
-  ret.any_key_touched = status & (1<<spec->bitmap->any_key_touched);
-  ret.overflow = status & (1<<spec->bitmap->overflow);
-  ret.calibrating = status & (1<<spec->bitmap->calibrating);
-  ret.keys = (status >> spec->bitmap->keys_start) & (0xFFFFFFFF << spec->keycount);
-  return ret; //TODO maybe use unique_pointer?
-}
-
 namespace spec_data {
   //Register addresses from https://github.com/janelia-arduino/AT42QT/blob/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT/RegisterAddresses.h
   const std::map<AT42QTRegister, uint8_t> reg_AT42QT1060 {

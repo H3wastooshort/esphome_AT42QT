@@ -5,48 +5,13 @@
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 
+#include "ChipSpecs.h"
 
 namespace esphome {
 namespace at42qt {
 static const char *const TAG = "at42qt";
 
 static const char *const i2c_fail_msg = "Read invalid chip ID. Check part number and wiring.";
-
-enum AT42QT2120_Registers
-{
-  CHIP_ID = 0,
-  VERSION,
-  STATUS,
-  CALIBRATE = 6,
-  RESET,
-  LOW_POWER_MODE,
-  TOWARDS_DRIFT_COMPENSATION_DURATION,
-  AWAY_DRIFT_COMPENSATION_DURATION,
-  DETECTION_INTEGRATOR,
-  RECALIBRATION_DELAY,
-  DRIFT_COMPENSATION_HOLD_DURATION,
-  SLIDER_OR_WHEEL_ENABLE,
-  CHARGE_DURATION,
-  KEY_DETECT_THRESHOLD,
-  KEY_CONTROL = 28,
-  KEY_PULSE_SCALE = 40,
-  KEY_SIGNAL = 52,
-  KEY_REFERENCE = 76,
-};
-
-union AT42QT2120_Status {
-  struct {
-    uint32_t any_key_touched : 1;
-    uint32_t slider_or_wheel : 1;
-    uint32_t space0 : 4;
-    uint32_t overflow : 1;
-    uint32_t calibrating : 1;
-    uint32_t keys: 12;
-    uint32_t space1 : 4;
-    uint32_t slider_or_wheel_position : 8;
-  };
-  uint8_t bytes[4];
-};
 
 class AT42QTHub;
 
@@ -76,7 +41,7 @@ class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
   AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
   void dump_config();
-  void process(uint32_t data) { this->publish_state(static_cast<bool>(data & (1 << this->channel))); }
+  void process(uint16_t keys);
 
   uint8_t get_channel() const;
   uint8_t get_threshold() const;
@@ -89,7 +54,8 @@ class AT42QTChannel : public binary_sensor::BinarySensor {
 
 class AT42QTHub : public Component, public i2c::I2CDevice {
  public:
-  AT42QTHub(uint8_t charge_time, uint8_t toward_touch_drift, uint8_t away_touch_drift, uint8_t detection_integrator, uint8_t touch_recal_delay, uint8_t drift_hold_time) : charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
+  AT42QTHub(const uint16_t chip_num, const uint8_t charge_time, const uint8_t toward_touch_drift, const uint8_t away_touch_drift, const uint8_t detection_integrator, const uint8_t touch_recal_delay, const uint8_t drift_hold_time) : chip_spec(chipnum_to_spec[chip_num]), charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
+  AT42QTHub(const AT42QTSpec* chip_spec, const uint8_t charge_time, const uint8_t toward_touch_drift, const uint8_t away_touch_drift, const uint8_t detection_integrator, const uint8_t touch_recal_delay, const uint8_t drift_hold_time) : chip_spec(chip_spec), charge_time(charge_time), toward_touch_drift(toward_touch_drift), away_touch_drift(away_touch_drift), detection_integrator(detection_integrator), touch_recal_delay(touch_recal_delay), drift_hold_time(drift_hold_time) {}
   void register_channel(AT42QTChannel *obj) { this->binary_sensors_.push_back(obj); }
   void register_debug(AT42QTDebug *obj) { this->sensors_.push_back(obj); }
   void setup() override;
@@ -98,7 +64,6 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
 
   void set_threshold(uint8_t channel, uint8_t threshold);
   void set_oversampling(uint8_t channel, uint8_t oversampling);
-
   //names from datasheet at https://ww1.microchip.com/downloads/en/DeviceDoc/doc9634.pdf
   void set_charge_time(uint8_t charge_time);
   void set_toward_touch_drift(uint8_t toward_touch_drift);
@@ -108,16 +73,20 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   void set_drift_hold_time(uint8_t drift_hold_time);  
   
  protected:
+  AT42QTStatus parse_status(uint32_t status);
+
+ private:
   std::vector<AT42QTChannel *> binary_sensors_;
   std::vector<AT42QTDebug *> sensors_;
   bool finished_setup{false};
-  
+
+  const AT42QTSpec* chip_spec;
   uint8_t charge_time;
   uint8_t toward_touch_drift;
   uint8_t away_touch_drift;
   uint8_t detection_integrator;
   uint8_t touch_recal_delay;
-  uint8_t drift_hold_time;  
+  uint8_t drift_hold_time;
 };
 
 } //namespace at42qt
