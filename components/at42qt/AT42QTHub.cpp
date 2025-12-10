@@ -65,9 +65,9 @@ void AT42QTHub::loop(){
         if (sensor->get_wants_update()) {
             uint8_t chan = sensor->get_channel();
             uint8_t signal = 0;
-            this->read_register(this->chip_spec->regmap->at(KEY_SIGNAL]+chan, &signal, 1);
+            this->read_register(this->chip_spec->regmap->at(KEY_SIGNAL)+chan, &signal, 1);
             uint8_t reference = 0;
-            this->read_register(this->chip_spec->regmap->at(KEY_REFERENCE]+chan, &reference, 1);
+            this->read_register(this->chip_spec->regmap->at(KEY_REFERENCE)+chan, &reference, 1);
             sensor->process(signal, reference);
         }
 }
