@@ -188,10 +188,10 @@ namespace spec_data {
 } //namespace spec_data
 
 std::map<uint16_t, const AT42QTSpec*> chipnum_to_spec{
-    {1060, spec_data::spec_AT42QT1060},
-    {1070, spec_data::spec_AT42QT1070},
-    {2120, spec_data::spec_AT42QT2120},
-    {2160, spec_data::spec_AT42QT2160}
+    {1060, &spec_data::spec_AT42QT1060},
+    {1070, &spec_data::spec_AT42QT1070},
+    {2120, &spec_data::spec_AT42QT2120},
+    {2160, &spec_data::spec_AT42QT2160}
 };
 
 } //namespace at42qt
