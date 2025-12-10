@@ -1,6 +1,7 @@
 /*
  * Register-maps and specifications for all chips of the family.
  */
+#pragma once
 #include <map>
 #include <cstdint>
 
