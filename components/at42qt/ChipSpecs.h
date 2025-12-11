@@ -53,6 +53,8 @@ enum AT42QTRegister : uint8_t { //enum of all possible registers, to be used in 
     VERSION
 };
 
+typedef std::map<AT42QTRegister, uint8_t> AT42QTRegisterMap;
+
 // -- status-parsing -- //
 struct AT42QTStatus {
     bool any_key_touched;
@@ -72,11 +74,12 @@ struct AT42QTSpec {
     const uint8_t keycount;
     const uint8_t chip_id;
     const uint8_t i2c_addr;
-    const std::map<AT42QTRegister, uint8_t> *regmap;
-    const AT42QTStatusBitmap *bitmap;
+    const AT42QTRegisterMap *register_map;
+    const AT42QTStatusBitmap *status_bitmap;
 };
 
-
+//from AT42QT.cpp
 extern std::map<uint16_t, const AT42QTSpec*> chipnum_to_spec;
+
 } //namespace at42qt
 } //namespace esphome

@@ -21,7 +21,7 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AT42QTDebug),
         cv.GenerateID(CONF_AT42QT_HUB_ID): cv.use_id(AT42QTHub),
-        cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=11),
+        cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=15), #TODO: make this based on hub
         cv.Optional(CONF_SENSOR_SIGNAL): sensor.sensor_schema(
             unit_of_measurement=UNIT_COUNTS,
             icon=ICON_SIGNAL_VARIANT,

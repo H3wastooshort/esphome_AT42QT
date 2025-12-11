@@ -7,7 +7,7 @@ namespace at42qt {
 
 namespace spec_data {
   //Register addresses from https://github.com/janelia-arduino/AT42QT/blob/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT/RegisterAddresses.h
-  const std::map<AT42QTRegister, uint8_t> reg_AT42QT1060 {
+  const AT42QTRegisterMap register_map_AT42QT1060 {
     {CHIP_ID, 0},
     {VERSION, 1},
     {STATUS, 4},
@@ -29,7 +29,7 @@ namespace spec_data {
     {KEY_SIGNAL, 40},
     {KEY_REFERENCE, 52},
   };
-  const std::map<AT42QTRegister, uint8_t> reg_AT42QT1070 {
+  const AT42QTRegisterMap register_map_AT42QT1070 {
     {CHIP_ID, 0},
     {VERSION, 1},
     {STATUS, 2},
@@ -44,7 +44,7 @@ namespace spec_data {
     {CALIBRATE, 56},
     {RESET, 57},
   };
-  const std::map<AT42QTRegister, uint8_t> reg_AT42QT2120 {
+  const AT42QTRegisterMap register_map_AT42QT2120 {
     {CHIP_ID, 0},
     {VERSION, 1},
     {STATUS, 2},
@@ -64,7 +64,7 @@ namespace spec_data {
     {KEY_SIGNAL, 52},
     {KEY_REFERENCE, 76},
   };
-  const std::map<AT42QTRegister, uint8_t> reg_AT42QT2160 {
+  const AT42QTRegisterMap register_map_AT42QT2160 {
     {CHIP_ID, 0},
     {VERSION, 1},
     {STATUS, 2},
@@ -94,25 +94,25 @@ namespace spec_data {
   };
 
   // -- status bitmaps -- //
-  const AT42QTStatusBitmap bit_AT42QT1060 = {255, 255, 7, 0};
-  const AT42QTStatusBitmap bit_AT42QT1070 = {0, 6, 7, 8};
-  const AT42QTStatusBitmap bit_AT42QT2120 = {0, 6, 7, 8};
-  const AT42QTStatusBitmap bit_AT42QT2160 = {255, 6, 255, 7};
+  const AT42QTStatusBitmap status_bitmap_AT42QT1060 = {255, 255, 7, 0};
+  const AT42QTStatusBitmap status_bitmap_AT42QT1070 = {0, 6, 7, 8};
+  const AT42QTStatusBitmap status_bitmap_AT42QT2120 = {0, 6, 7, 8};
+  const AT42QTStatusBitmap status_bitmap_AT42QT2160 = {255, 6, 255, 7};
 
-
-  // -- Final Mapping -- //
-  //keycount, chipID, addr, from https://github.com/janelia-arduino/AT42QT/tree/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT
-  const struct AT42QTSpec spec_AT42QT1060 = { 6, 0x31, 0x12, &reg_AT42QT1060, &bit_AT42QT1060};
-  const struct AT42QTSpec spec_AT42QT1070 = { 7, 0x2E, 0x1B, &reg_AT42QT1070, &bit_AT42QT1070};
-  const struct AT42QTSpec spec_AT42QT2120 = {12, 0x3E, 0x1C, &reg_AT42QT2120, &bit_AT42QT2120};
-  const struct AT42QTSpec spec_AT42QT2160 = {16, 0x11, 0x0D, &reg_AT42QT2160, &bit_AT42QT2160};
 } //namespace spec_data
 
+// -- Final Mapping -- //
+//keycount, chipID, addr, from https://github.com/janelia-arduino/AT42QT/tree/09685cb123f61658bafe513609bf38cb96f55c0e/src/AT42QT
+const struct AT42QTSpec spec_AT42QT1060 = { 6, 0x31, 0x12, &spec_data::register_map_AT42QT1060, &spec_data::status_bitmap_AT42QT1060};
+const struct AT42QTSpec spec_AT42QT1070 = { 7, 0x2E, 0x1B, &spec_data::register_map_AT42QT1070, &spec_data::status_bitmap_AT42QT1070};
+const struct AT42QTSpec spec_AT42QT2120 = {12, 0x3E, 0x1C, &spec_data::register_map_AT42QT2120, &spec_data::status_bitmap_AT42QT2120};
+const struct AT42QTSpec spec_AT42QT2160 = {16, 0x11, 0x0D, &spec_data::register_map_AT42QT2160, &spec_data::status_bitmap_AT42QT2160};
+
 std::map<uint16_t, const AT42QTSpec*> chipnum_to_spec{
-    {1060, &spec_data::spec_AT42QT1060},
-    {1070, &spec_data::spec_AT42QT1070},
-    {2120, &spec_data::spec_AT42QT2120},
-    {2160, &spec_data::spec_AT42QT2160}
+    {1060, &spec_AT42QT1060},
+    {1070, &spec_AT42QT1070},
+    {2120, &spec_AT42QT2120},
+    {2160, &spec_AT42QT2160}
 };
 
 } //namespace at42qt

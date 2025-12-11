@@ -26,18 +26,26 @@ AT42QTHub = at42qt_ns.class_("AT42QTHub", cg.Component, i2c.I2CDevice)
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AT42QTHub),
-        cv.Optional(CONF_CHIP_NUM, default=2120): cv.int_range(min=0, max=0xFFFF), #TODO: validate that chipnum in map
-        cv.Optional(CONF_PULSE_LENGTH, default=0): cv.int_range(min=0, max=0xFF),
+        cv.Required(CONF_CHIP_NUM): cv.one_of(1060, 1070, 2120, 2160, int=True), #valid inputs to chipnum_to_spec in ChipSpecs.cpp
+        cv.Optional(CONF_PULSE_LENGTH, default=0): cv.uint8_t,
         cv.Optional(CONF_TTD, default=20): cv.int_range(min=0, max=127),
         cv.Optional(CONF_ATD, default=5): cv.int_range(min=0, max=127),
         cv.Optional(CONF_DI, default=4): cv.int_range(min=1, max=32),
-        cv.Optional(CONF_TRD, default=255): cv.int_range(min=0, max=255),
-        cv.Optional(CONF_DHT, default=25): cv.int_range(min=0, max=255),
+        cv.Optional(CONF_TRD, default=255): cv.uint8_t,
+        cv.Optional(CONF_DHT, default=25): cv.uint8_t,
     }
 ).extend(cv.COMPONENT_SCHEMA).extend(i2c.i2c_device_schema(0x1C))
 
 async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID], config[CONF_CHIP_NUM], config[CONF_PULSE_LENGTH], config[CONF_TTD], config[CONF_ATD], config[CONF_DI], config[CONF_TRD], config[CONF_DHT])
+    var = cg.new_Pvariable(config[CONF_ID],
+        config[CONF_CHIP_NUM],
+        config[CONF_PULSE_LENGTH],
+        config[CONF_TTD],
+        config[CONF_ATD],
+        config[CONF_DI],
+        config[CONF_TRD],
+        config[CONF_DHT]
+    )
     #TODO: pinconfig
     await cg.register_component(var, config)
     await i2c.register_i2c_device(var, config)

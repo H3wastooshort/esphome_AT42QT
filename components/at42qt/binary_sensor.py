@@ -13,9 +13,9 @@ CONFIG_SCHEMA = (
     binary_sensor.binary_sensor_schema(AT42QTChannel).extend(
         {
             cv.GenerateID(CONF_AT42QT_HUB_ID): cv.use_id(AT42QTHub),
-            cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=11),
-            cv.Optional(CONF_THRESHOLD, default=10): cv.int_range(min=0, max=0xFF),
-            cv.Optional(CONF_OVERSAMPLING, default=0x00): cv.int_range(min=0, max=0xFF),
+            cv.Required(CONF_CHANNEL): cv.int_range(min=0, max=15), #TODO: make this based on hub
+            cv.Optional(CONF_THRESHOLD, default=10): cv.uint8_t,
+            cv.Optional(CONF_OVERSAMPLING, default=0x00): cv.hex_uint8_t,
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
