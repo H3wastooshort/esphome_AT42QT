@@ -13,7 +13,7 @@ void AT42QTHub::setup(){
         uint8_t chip_id = 0;
         this->read_register(this->chip_spec->regmap->at(CHIP_ID), &chip_id, 1);
         ESP_LOGD(TAG, "chip ID is 0x%02x.", chip_id);
-        if (chip_id != 0x3E) this->mark_failed(i2c_fail_msg);
+        if (chip_id != this->chip_spec->chip_id) this->mark_failed(i2c_fail_msg);
         
         //write inital parameters to chip
         ESP_LOGV(TAG, "setting registers");
@@ -73,7 +73,7 @@ void AT42QTHub::loop(){
 }
 
 
-AT42QTStatus AT42QTHub::parse_status(uint32_t status) {
+AT42QTStatus AT42QTHub::parse_status(uint32_t status) const {
   AT42QTStatus ret;
   ret.any_key_touched = status & (1 << this->chip_spec->bitmap->any_key_touched);
   ret.overflow = status & (1 << this->chip_spec->bitmap->overflow);
@@ -82,7 +82,7 @@ AT42QTStatus AT42QTHub::parse_status(uint32_t status) {
   return ret; //TODO maybe use unique_pointer?
 }
 
-void AT42QTHub::dump_config(){
+void AT42QTHub::dump_config() const{
     ESP_LOGCONFIG(TAG,
         "Touch-Hub:\n"
         "  Pulse Length: %d\n"
@@ -152,7 +152,7 @@ uint8_t AT42QTChannel::get_channel() const {return this->channel;};
 uint8_t AT42QTChannel::get_threshold() const {return this->threshold;};
 uint8_t AT42QTChannel::get_oversampling() const {return this->oversampling;};
 
-void AT42QTChannel::dump_config(){
+void AT42QTChannel::dump_config() const {
     LOG_BINARY_SENSOR(TAG, " Touch Key", this);
     ESP_LOGCONFIG(TAG,
         " Channel: %d\n"
@@ -168,6 +168,7 @@ void AT42QTChannel::dump_config(){
 
 uint8_t AT42QTDebug::get_channel() const {return this->channel;};
 bool AT42QTDebug::get_wants_update() const {return this->wants_update;};
+void AT42QTDebug::update() override {this->wants_update=true;};
 
 void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
     if (this->sensor_sig != nullptr) this->sensor_sig->publish_state(signal);
@@ -175,7 +176,7 @@ void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
     this->wants_update=false;
 }
 
-void AT42QTDebug::dump_config(){
+void AT42QTDebug::dump_config() const {
     ESP_LOGCONFIG(TAG,
         "Debug Sensor\n"
         "  Channel: %d",

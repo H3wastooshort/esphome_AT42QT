@@ -27,8 +27,8 @@ class AT42QTDebug : public PollingComponent {
 
   void setup() override {};
   void loop() override {};
-  void update() override {this->wants_update=true;};
-  void dump_config() override;
+  void update() override;
+  void dump_config() override const;
 
  protected:
   bool wants_update{true};
@@ -40,13 +40,15 @@ class AT42QTDebug : public PollingComponent {
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
   AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
-  void dump_config();
+  void dump_config() const;
   void process(uint16_t keys);
 
   uint8_t get_channel() const;
   uint8_t get_threshold() const;
   uint8_t get_oversampling() const;
- protected:
+
+ private:
+  //use getter, don't touch these
   uint8_t channel{0};
   uint8_t threshold{10};
   uint8_t oversampling{0};
@@ -60,7 +62,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   void register_debug(AT42QTDebug *obj) { this->sensors_.push_back(obj); }
   void setup() override;
   void loop() override;
-  void dump_config() override;
+  void dump_config() override const;
 
   void set_threshold(uint8_t channel, uint8_t threshold);
   void set_oversampling(uint8_t channel, uint8_t oversampling);
@@ -73,12 +75,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   void set_drift_hold_time(uint8_t drift_hold_time);  
   
  protected:
-  AT42QTStatus parse_status(uint32_t status);
-
- private:
-  std::vector<AT42QTChannel *> binary_sensors_;
-  std::vector<AT42QTDebug *> sensors_;
-  bool finished_setup{false};
+  AT42QTStatus parse_status(uint32_t status) const;
 
   const AT42QTSpec* chip_spec;
   uint8_t charge_time;
@@ -87,6 +84,11 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   uint8_t detection_integrator;
   uint8_t touch_recal_delay;
   uint8_t drift_hold_time;
+
+ private:
+  std::vector<AT42QTChannel *> binary_sensors_;
+  std::vector<AT42QTDebug *> sensors_;
+  bool finished_setup{false};
 };
 
 } //namespace at42qt
