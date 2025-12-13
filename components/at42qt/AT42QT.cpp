@@ -6,8 +6,8 @@ namespace at42qt {
 
 void AT42QTHub::setup(){
     ESP_LOGV(TAG, "resetting chip");
-    uint8_t nzv=1;
-    this->write_register(this->chip_spec->register_map->at(RESET), &nzv, 1);
+    uint8_t non_zero_value=1;
+    this->write_register(this->chip_spec->register_map->at(RESET), &non_zero_value, 1);
 
     this->set_timeout(250, [this]() {//chip reset after approx 200ms
         uint8_t chip_id = 0;
@@ -29,8 +29,8 @@ void AT42QTHub::setup(){
             this->set_oversampling(chan->get_channel(), chan->get_oversampling());
         }
 
-        uint8_t nzv=1;
-        this->write_register(this->chip_spec->register_map->at(CALIBRATE), &nzv, 1);
+        uint8_t non_zero_value=1;
+        this->write_register(this->chip_spec->register_map->at(CALIBRATE), &non_zero_value, 1);
         ESP_LOGV(TAG, "calibration started");
         this->finished_setup=true;
     });
@@ -82,7 +82,7 @@ AT42QTStatus AT42QTHub::parse_status(uint32_t status) const {
   return ret; //TODO maybe use unique_pointer?
 }
 
-void AT42QTHub::dump_config() const{
+void AT42QTHub::dump_config() {
     ESP_LOGCONFIG(TAG,
         "Touch-Hub:\n"
         "  Pulse Length: %d\n"
@@ -152,7 +152,7 @@ uint8_t AT42QTChannel::get_channel() const {return this->channel;};
 uint8_t AT42QTChannel::get_threshold() const {return this->threshold;};
 uint8_t AT42QTChannel::get_oversampling() const {return this->oversampling;};
 
-void AT42QTChannel::dump_config() const {
+void AT42QTChannel::dump_config() {
     LOG_BINARY_SENSOR(TAG, " Touch Key", this);
     ESP_LOGCONFIG(TAG,
         " Channel: %d\n"
@@ -176,7 +176,7 @@ void AT42QTDebug::process(uint8_t signal, uint8_t reference) {
     this->wants_update=false;
 }
 
-void AT42QTDebug::dump_config() const {
+void AT42QTDebug::dump_config() {
     ESP_LOGCONFIG(TAG,
         "Debug Sensor\n"
         "  Channel: %d",
