@@ -50,7 +50,7 @@ void AT42QTHub::loop(){
     AT42QTStatus status = parse_status(chip_reg_i);
     if (chip_reg_i != last_chip_reg) { //debug output
         ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg_i);
-        ESP_LOGD(TAG, "any touch: %d\noverflow: %d\ncalibrating: %d\nkeys: 0x%02X", status.any_key_touched, status.overflow, status.calibrating, status.keys);
+        ESP_LOGD(TAG, "touch=%d overflow=%d calibrating=%d keys=0x%04X", status.any_key_touched, status.overflow, status.calibrating, status.keys);
         last_chip_reg=chip_reg_i;
     }
     //check that cal has ended
