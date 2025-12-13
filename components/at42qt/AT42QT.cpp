@@ -12,7 +12,7 @@ void AT42QTHub::setup(){
     this->set_timeout(250, [this]() {//chip reset after approx 200ms
         uint8_t chip_id = 0;
         this->read_register(this->chip_spec->register_map->at(CHIP_ID), &chip_id, 1);
-        ESP_LOGD(TAG, "chip ID is 0x%02x.", chip_id);
+        ESP_LOGD(TAG, "chip ID is 0x%02X.", chip_id);
         if (chip_id != this->chip_spec->chip_id) this->mark_failed(MSG_CHIP_ID_INCORRECT);
         
         //write inital parameters to chip
@@ -40,11 +40,16 @@ void AT42QTHub::loop(){
     if (!this->finished_setup) return;
 
     //read status
+    static uint32_t last_chip_reg=0xFFFFFFFF;
     union {
         uint32_t i;
         uint8_t b[4]; 
     } chip_reg;
     this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg.b[0]), 4);
+    if (chip_reg.i != last_chip_reg) {
+        ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg.i);
+        last_chip_reg=chip_reg.i;
+    } 
     AT42QTStatus status = parse_status(chip_reg.i);
 
     //check that cal has ended
@@ -88,7 +93,7 @@ void AT42QTHub::dump_config() {
         "  Chip: AT42QT%04d\n"
         "    Spec: %p\n"
         "    Keycount: %d\n"
-        "    Correct Chip-ID: %02x\n"
+        "    Correct Chip-ID: 0x%02X\n"
         "  Pulse Length: %d\n"
         "  Toward Touch-Drift: %d\n"
         "  Away Touch-Drift: %d\n"
@@ -117,7 +122,7 @@ void AT42QTHub::set_threshold(uint8_t channel, uint8_t threshold) {
 }
 void AT42QTHub::set_oversampling(uint8_t channel, uint8_t oversampling) {
     this->write_register(this->chip_spec->register_map->at(KEY_PULSE_SCALE) + channel, &oversampling, 1);
-    ESP_LOGD(TAG, "Set channel %d oversampling to 0x%02x.", channel, oversampling);
+    ESP_LOGD(TAG, "Set channel %d oversampling to 0x%02X.", channel, oversampling);
 }
 
 void AT42QTHub::set_charge_time(uint8_t charge_time) {
@@ -165,7 +170,7 @@ void AT42QTChannel::dump_config() {
     ESP_LOGCONFIG(TAG,
         " Channel: %d\n"
         " Threshold: %d\n"
-        " Oversampling: 0x%02x",
+        " Oversampling: 0x%02X",
         this->channel,
         this->threshold,
         this->oversampling
@@ -191,8 +196,8 @@ void AT42QTDebug::dump_config() {
         this->channel
     );
     //TODO: nicer output here, indent sensor log
-    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " signal", sensor_sig);
-    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " reference", sensor_ref);
+    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " Signal-Sensor", sensor_sig);
+    if (this->sensor_sig != nullptr) LOG_SENSOR(TAG, " Reference-Sensor", sensor_ref);
 }
 
 } //namespace at42qt
