@@ -28,7 +28,7 @@ class AT42QTDebug : public PollingComponent {
   void setup() override {};
   void loop() override {};
   void update() override;
-  void dump_config() override const;
+  void dump_config() override;
 
  private: //use setter/getter
   bool wants_update{true};
@@ -40,7 +40,7 @@ class AT42QTDebug : public PollingComponent {
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
   AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
-  void dump_config() const;
+  void dump_config();
   void process(uint16_t keys);
 
   uint8_t get_channel() const;
@@ -99,7 +99,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
   void register_debug(AT42QTDebug *obj) { this->debug_sensors_.push_back(obj); }
   void setup() override;
   void loop() override;
-  void dump_config() override const;
+  void dump_config() override;
 
   void set_threshold(uint8_t channel, uint8_t threshold);
   void set_oversampling(uint8_t channel, uint8_t oversampling);
