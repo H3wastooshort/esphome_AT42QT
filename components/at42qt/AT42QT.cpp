@@ -36,21 +36,23 @@ void AT42QTHub::setup(){
     });
 }
 
+#define STATUS_SIZE 4
 void AT42QTHub::loop(){
     if (!this->finished_setup) return;
 
     //read status
-    static uint32_t last_chip_reg=0xFFFFFFFF;
-    union {
-        uint32_t i;
-        uint8_t b[4]; 
-    } chip_reg;
-    this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg.b[0]), 4);
-    if (chip_reg.i != last_chip_reg) {
-        ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg.i);
-        last_chip_reg=chip_reg.i;
+    static uint32_t last_chip_reg=0xFFFFFFFF; //for debug output
+    uint8_t chip_reg_b[STATUS_SIZE]; uint32_t chip_reg_i=0;
+    for (uint8_t i=0; i<STATUS_SIZE; i++) { //not using a union due to little/big endian issues
+        chip_reg_i |= chip_reg_b[i]; //set lower 8 bits
+        chip_reg_i <<= 8; //shift over by 1 byte
     } 
-    AT42QTStatus status = parse_status(chip_reg.i);
+    this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg_b[0]), STATUS_SIZE);
+    if (chip_reg.i != last_chip_reg) { //debug output
+        ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg_i);
+        last_chip_reg=chip_reg_i;
+    }
+    AT42QTStatus status = parse_status(chip_reg_i);
 
     //check that cal has ended
     static uint8_t cal_status = 255;
