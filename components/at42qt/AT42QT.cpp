@@ -79,7 +79,7 @@ AT42QTStatus AT42QTHub::parse_status(uint32_t status) const {
   ret.any_key_touched = status & (1 << this->chip_spec->status_bitmap->any_key_touched);
   ret.overflow = status & (1 << this->chip_spec->status_bitmap->overflow);
   ret.calibrating = status & (1 << this->chip_spec->status_bitmap->calibrating);
-  ret.keys = (status >> this->chip_spec->status_bitmap->keys_start) & !(0xFFFFFFFF << this->chip_spec->keycount);
+  ret.keys = (status >> this->chip_spec->status_bitmap->keys_start) & ~(0xFFFFFFFF << this->chip_spec->keycount);
   return ret; //TODO maybe use unique_pointer?
 }
 
