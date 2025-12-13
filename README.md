@@ -18,7 +18,7 @@ i2c:
 
 at42qt:
   id: touch_ic
-  pulse_length: 128
+  chip_number: 2120
 
 binary_sensor:
   - platform: at42qt
