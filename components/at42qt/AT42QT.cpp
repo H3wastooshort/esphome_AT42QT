@@ -47,18 +47,13 @@ void AT42QTHub::loop(){
     this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg_b[0]), STATUS_SIZE);
     for (uint8_t i=0; i<STATUS_SIZE; i++)
         chip_reg_i |= uint32_t(chip_reg_b[i]) << (i*8);//not using a union due to little/big endian issues
+    AT42QTStatus status = parse_status(chip_reg_i);
     if (chip_reg_i != last_chip_reg) { //debug output
         ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg_i);
+        ESP_LOGD(TAG, "any touch: %d\noverflow: %d\ncalibrating: %d\nkeys: 0x%02X", status.any_key_touched, status.overflow, status.calibrating, status.keys);
         last_chip_reg=chip_reg_i;
     }
-    AT42QTStatus status = parse_status(chip_reg_i);
-
     //check that cal has ended
-    static uint8_t cal_status = 255;
-    if (status.calibrating != cal_status) {
-        ESP_LOGD(TAG, "calibration active: %d", status.calibrating);
-        cal_status=status.calibrating;
-    }
     if (status.calibrating) return;
 
     //send keystate to binsensors
