@@ -42,12 +42,13 @@ void AT42QTHub::loop(){
 
     //read status
     static uint32_t last_chip_reg=0xFFFFFFFF; //for debug output
-    uint8_t chip_reg_b[STATUS_SIZE]; uint32_t chip_reg_i=0;
-    for (uint8_t i=0; i<STATUS_SIZE; i++) { //not using a union due to little/big endian issues
+    uint8_t chip_reg_b[STATUS_SIZE];
+    uint32_t chip_reg_i=0;
+    this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg_b[0]), STATUS_SIZE);
+    for (int8_t i=STATUS_SIZE-1; i>0; i--) { //not using a union due to little/big endian issues
         chip_reg_i |= chip_reg_b[i]; //set lower 8 bits
         chip_reg_i <<= 8; //shift over by 1 byte
     } 
-    this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg_b[0]), STATUS_SIZE);
     if (chip_reg_i != last_chip_reg) { //debug output
         ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg_i);
         last_chip_reg=chip_reg_i;
