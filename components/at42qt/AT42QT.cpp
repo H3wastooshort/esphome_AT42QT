@@ -85,12 +85,22 @@ AT42QTStatus AT42QTHub::parse_status(uint32_t status) const {
 void AT42QTHub::dump_config() {
     ESP_LOGCONFIG(TAG,
         "Touch-Hub:\n"
+        "  Chip: AT42QT%04d\n"
+        "    Spec: %p\n"
+        "    Keycount: %d\n"
+        "    Correct Chip-ID: %02x\n"
+        "    I2C-Address: %02x\n"
         "  Pulse Length: %d\n"
         "  Toward Touch-Drift: %d\n"
         "  Away Touch-Drift: %d\n"
         "  Deglitch: %d\n"
         "  Touch Recal Delay: %d\n"
         "  Drift Hold Time: %d",
+        this->chip_num,
+        this->chip_spec,
+        this->chip_spec->keycount,
+        this->chip_spec->chip_id,
+        this->chip_spec->i2c_addr,
         this->charge_time,
         this-> toward_touch_drift,
         this-> away_touch_drift,
