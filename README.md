@@ -8,7 +8,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/H3wastooshort/esphome_AT42QT.git
-      ref: main
+      ref: stable
     components: [ at42qt ]
     refresh: 60s
 
