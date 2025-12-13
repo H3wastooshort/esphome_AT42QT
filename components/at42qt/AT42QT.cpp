@@ -48,7 +48,7 @@ void AT42QTHub::loop(){
         chip_reg_i <<= 8; //shift over by 1 byte
     } 
     this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg_b[0]), STATUS_SIZE);
-    if (chip_reg.i != last_chip_reg) { //debug output
+    if (chip_reg_i != last_chip_reg) { //debug output
         ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg_i);
         last_chip_reg=chip_reg_i;
     }
