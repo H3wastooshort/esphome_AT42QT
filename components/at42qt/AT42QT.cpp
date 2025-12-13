@@ -45,10 +45,8 @@ void AT42QTHub::loop(){
     uint8_t chip_reg_b[STATUS_SIZE];
     uint32_t chip_reg_i=0;
     this->read_register(this->chip_spec->register_map->at(STATUS), &(chip_reg_b[0]), STATUS_SIZE);
-    for (int8_t i=STATUS_SIZE-1; i>0; i--) { //not using a union due to little/big endian issues
-        chip_reg_i |= chip_reg_b[i]; //set lower 8 bits
-        chip_reg_i <<= 8; //shift over by 1 byte
-    } 
+    for (uint8_t i=0; i<STATUS_SIZE; i++)
+        chip_reg_i |= uint32_t(chip_reg_b[i]) << (i*8);//not using a union due to little/big endian issues
     if (chip_reg_i != last_chip_reg) { //debug output
         ESP_LOGV(TAG, "Status-Register: 0x%08x -> 0x%08X", last_chip_reg, chip_reg_i);
         last_chip_reg=chip_reg_i;
@@ -86,7 +84,7 @@ AT42QTStatus AT42QTHub::parse_status(uint32_t status) const {
   ret.any_key_touched = status & (1 << this->chip_spec->status_bitmap->any_key_touched);
   ret.overflow = status & (1 << this->chip_spec->status_bitmap->overflow);
   ret.calibrating = status & (1 << this->chip_spec->status_bitmap->calibrating);
-  ret.keys = (status >> this->chip_spec->status_bitmap->keys_start) & (0xFFFFFFFF << this->chip_spec->keycount);
+  ret.keys = (status >> this->chip_spec->status_bitmap->keys_start) & !(0xFFFFFFFF << this->chip_spec->keycount);
   return ret; //TODO maybe use unique_pointer?
 }
 
