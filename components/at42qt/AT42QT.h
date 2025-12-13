@@ -66,7 +66,7 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
     const uint8_t touch_recal_delay,
     const uint8_t drift_hold_time
   ) : 
-    chip_num(chip_num)
+    chip_num(chip_num),
     chip_spec(chipnum_to_spec.at(chip_num)),
     charge_time(charge_time),
     toward_touch_drift(toward_touch_drift),
