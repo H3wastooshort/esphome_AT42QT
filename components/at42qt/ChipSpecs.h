@@ -73,7 +73,6 @@ struct AT42QTStatusBitmap { //answers: at which bit in the status is x located? 
 struct AT42QTSpec {
     const uint8_t keycount;
     const uint8_t chip_id;
-    const uint8_t i2c_addr;
     const AT42QTRegisterMap *register_map;
     const AT42QTStatusBitmap *status_bitmap;
 };

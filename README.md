@@ -19,6 +19,7 @@ i2c:
 at42qt:
   id: touch_ic
   chip_number: 2120
+  address: 0x1C
 
 binary_sensor:
   - platform: at42qt

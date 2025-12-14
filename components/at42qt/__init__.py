@@ -34,7 +34,13 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_TRD, default=255): cv.uint8_t,
         cv.Optional(CONF_DHT, default=25): cv.uint8_t,
     }
-).extend(cv.COMPONENT_SCHEMA).extend(i2c.i2c_device_schema(0x1C))
+).extend(cv.COMPONENT_SCHEMA).extend(i2c.i2c_device_schema(None))
+
+# Default I2C addresses
+# AT42QT1060: 0x12
+# AT42QT1070: 0x1B
+# AT42QT2120: 0x1C
+# AT42QT2160: 0x0D
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID],
