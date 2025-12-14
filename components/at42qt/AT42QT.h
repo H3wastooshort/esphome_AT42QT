@@ -18,6 +18,10 @@ class AT42QTHub;
 class AT42QTDebug : public PollingComponent {
  public:
   AT42QTDebug(uint8_t channel) : channel(channel) {};
+  //no copy allowed.
+  AT42QTDebug(const AT42QTDebug&) = delete;
+  const AT42QTDebug& operator=(const AT42QTDebug&) = delete;
+
   void process(uint8_t signal, uint8_t reference);
   uint8_t get_channel() const;
   bool get_wants_update() const;
@@ -40,6 +44,10 @@ class AT42QTDebug : public PollingComponent {
 class AT42QTChannel : public binary_sensor::BinarySensor {
  public:
   AT42QTChannel(uint8_t channel, uint8_t threshold, uint8_t oversampling) : channel(channel), threshold(threshold), oversampling(oversampling) {};
+  //no copy allowed.
+  AT42QTChannel(const AT42QTChannel&) = delete;
+  const AT42QTChannel& operator=(const AT42QTChannel&) = delete;
+
   void dump_config();
   void process(uint16_t keys);
 
@@ -75,6 +83,9 @@ class AT42QTHub : public Component, public i2c::I2CDevice {
     touch_recal_delay(touch_recal_delay),
     drift_hold_time(drift_hold_time)
   {}
+  //no copy allowed.
+  AT42QTHub(const AT42QTHub&) = delete;
+  const AT42QTHub& operator=(const AT42QTHub&) = delete;
   
   void register_channel(AT42QTChannel *obj) { this->touch_channels_.push_back(obj); }
   void register_debug(AT42QTDebug *obj) { this->debug_sensors_.push_back(obj); }
