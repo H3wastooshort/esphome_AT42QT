@@ -1,6 +1,9 @@
-UNFINISHED!!
-
-currently works for AT42QT2120. others can be added
+Theoretically supports:
+- AT42QT1060
+- AT42QT1070
+- AT42QT2120
+- AT42QT2160
+Works for AT42QT2120. others have not been tested.
 
 ### Example
 ```yaml
