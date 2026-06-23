@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esphome/core/component.h"
+#include "esphome/core/log.h"
 #include "esphome/components/i2c/i2c.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
@@ -10,8 +11,7 @@
 namespace esphome {
 namespace at42qt {
 static const char *const TAG = "at42qt";
-
-static const char *const MSG_CHIP_ID_INCORRECT = "Read invalid chip ID! Check part number and wiring.";
+auto MSG_CHIP_ID_INCORRECT = LOG_STR("Read invalid chip ID! Check part number and wiring.");
 
 class AT42QTHub;
 
