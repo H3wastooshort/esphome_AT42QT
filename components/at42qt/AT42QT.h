@@ -10,8 +10,8 @@
 
 namespace esphome {
 namespace at42qt {
-static const char *const TAG = "at42qt";
-auto MSG_CHIP_ID_INCORRECT = LOG_STR("Read invalid chip ID! Check part number and wiring.");
+extern static const char *const TAG;
+extern static const LogString *const MSG_CHIP_ID_INCORRECT;
 
 class AT42QTHub;
 
