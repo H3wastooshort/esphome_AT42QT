@@ -42,6 +42,13 @@ CONFIG_SCHEMA = cv.Schema(
 # AT42QT2120: 0x1C
 # AT42QT2160: 0x0D
 
+pincount_per_chp = {
+    1060:  6,
+    1070:  7,
+    2120: 12,
+    2160: 16,
+}
+
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID],
         config[CONF_CHIP_NUM],
