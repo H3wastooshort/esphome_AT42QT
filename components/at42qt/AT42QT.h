@@ -10,8 +10,8 @@
 
 namespace esphome {
 namespace at42qt {
-extern static const char *const TAG;
-extern static const LogString *const MSG_CHIP_ID_INCORRECT;
+extern const char *const TAG;
+extern const LogString *const MSG_CHIP_ID_INCORRECT;
 
 class AT42QTHub;
 
