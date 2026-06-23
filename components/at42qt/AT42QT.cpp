@@ -4,8 +4,8 @@
 namespace esphome {
 namespace at42qt {
 
-static const char *const TAG = "at42qt";
-static const LogString *const MSG_CHIP_ID_INCORRECT = LOG_STR("Read invalid chip ID! Check part number and wiring.");
+const char *const TAG = "at42qt";
+const LogString *const MSG_CHIP_ID_INCORRECT = LOG_STR("Read invalid chip ID! Check part number and wiring.");
 
 void AT42QTHub::setup(){
     ESP_LOGV(TAG, "resetting chip");
